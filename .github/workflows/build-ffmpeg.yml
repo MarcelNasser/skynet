@@ -6,6 +6,7 @@ on:
   push:
     paths:
       - .build/ffmpeg/**
+      - .github/workflows/build-ffmpeg.yml
 
 jobs:
   build:
