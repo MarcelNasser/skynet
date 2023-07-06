@@ -23,7 +23,7 @@ WORKDIR /src/
 
 #copy all sources to /src
 COPY . /src/
-RUN chmod +x /src/*/*.sh /src/*/run
+RUN chmod +x /src/**/*.sh /src/**/run
 
 #build
 #copying python binaries

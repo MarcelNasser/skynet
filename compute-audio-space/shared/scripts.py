@@ -9,6 +9,7 @@ from scipy.io.wavfile import WavFileWarning
 logger = getLogger("compute-audio-space")
 basicConfig(level=ERROR, format="%(levelname)s: %(message)s")
 
+import matplotlib
 import matplotlib.pyplot as plot
 from scipy.io import wavfile
 import numpy
@@ -23,14 +24,23 @@ class Color:
         "xkcd:sky blue", "xkcd:neon blue",
         "xkcd:umber", "xkcd:golden yellow"
     ]
+    N_SHADES = 6
 
     def __init__(self):
         self.index = -1
         self.len = len(self.COLORS_PALETTE)
+        c = numpy.arange(1, self.N_SHADES + 1)
+        norm = matplotlib.colors.Normalize(vmin=c.min(), vmax=c.max())
+        self.cmap = matplotlib.cm.ScalarMappable(norm=norm, cmap=matplotlib.cm.Set1)
+        self.cmap.set_array([])
 
     def next(self):
         self.index += 1
         return self.COLORS_PALETTE[self.index % self.len]
+
+    def next2(self):
+        self.index += 1
+        return self.cmap.to_rgba(self.index % self.N_SHADES)
 
 
 color = Color()
@@ -50,7 +60,7 @@ def fft_audio(opt):
     for i, a in enumerate(reversed(opt.audio)):
         logger.info(f"audio file: {a}")
         rate, audio_data = _read_audio(a)
-        _plot_audio(rate=rate, audio_data=audio_data, label=a)
+        _plot_audio(rate=rate, audio_data=audio_data, label=f"{a} ({int(audio_data.size/rate)}s)")
     _end_plot(opt)
 
 
@@ -108,7 +118,7 @@ def _plot_audio(rate, audio_data, label):
         amplitude = _scale(numpy.fft.fft(audio_data))  # take the fourier transform of left channel
     freq = numpy.arange(0, n, 1.0) * (rate / n) / 1000
     logger.info(f"#_freq={n}, min_freq={freq[0]}(khz), max_freq={freq[-1]}(khz)")
-    plot.plot(freq, numpy.log10(amplitude), color=color.next(), label=label)
+    plot.plot(freq, numpy.log10(amplitude), color=color.next2(), label=label)
     return
 
 

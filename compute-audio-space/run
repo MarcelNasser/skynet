@@ -7,41 +7,34 @@ function usage() {
   compute non-variant space from audio files in the source directory.
   Arguments:
    - s: target directory
-   - m: compute method [expensive/direct]
+   - m: compute method [expensive/direct/fractal] :: default=='default'
+   - l: fractal level for the recursive chopping :: default=='3'
   "
 }
 
-function copy_file() {
-    [ ! -f "$1" ] && return 0
-    [ "$1" != "$2" ] && echo -e "-- editing file $1" && mv "$1" "$2"
-}
-
-function legit_name() {
-  lowercase_name=${1,,}
-  clean_name="${lowercase_name//[\ \'\(\)]/_}"
-  copy_file "$1" "$clean_name" >/dev/null
-}
-
-function info() {
-  [ -n "$VERBOSE" ] && echo -e "$1" >&2 || return 0
-}
 
 ROOT_DIR=$(dirname "$0")
 
+#Load source(s)
+source "$ROOT_DIR/shared/utils.sh"
+source "$ROOT_DIR/shared/preprocess.sh"
+source "$ROOT_DIR/shared/compute.sh"
+
+#Load arguments
 source "$ROOT_DIR/shared/args.sh"
 
 #Dependencies check
-source "$ROOT_DIR/shared/requirements.sh"
+dependencies
 
 #preprocess audio files
-source "$ROOT_DIR/shared/preprocess.sh"
-
-#chop audio file to check fractal conservation (method==expensive)
-[ "$COMPUTE_METHOD" == "expensive" ] && source "$ROOT_DIR/shared/chop.sh" || true
+preprocess
 
 #Compute FFT of original / reverted / palindromic audio file
-source "$ROOT_DIR/shared/compute-3.sh"
+[[ "$COMPUTE_METHOD" == @("expensive"|"default") ]] && compute-p
 
-[ "$COMPUTE_METHOD" == "expensive" ] && cd "$SOURCE_DIRECTORY" && clear_chopped || true
+#Compute FFT of original / chop #1 / chop #2
+[[ "$COMPUTE_METHOD" == "fractal" ]] && compute-f
+
+if [[ "$COMPUTE_METHOD" == @("expensive"|"fractal") ]]; then { cd "$SOURCE_DIRECTORY" && wipe-chops; }; fi
 
 

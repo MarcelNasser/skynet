@@ -1,8 +1,10 @@
-while getopts :m:s: flag
+while getopts :m:s:l:v: flag
 do
     case "${flag}" in
         m) COMPUTE_METHOD=${OPTARG};;
         s) SOURCE_DIRECTORY=${OPTARG};;
+        l) FRACTAL_LEVEL=${OPTARG};;
+        v) VERBOSE=${OPTARG};;
         *)
           usage
           exit 0
@@ -10,5 +12,12 @@ do
     esac
 done
 
+COMPUTE_METHOD=${COMPUTE_METHOD:-default}
+FRACTAL_LEVEL=${FRACTAL_LEVEL:-2}
+VERBOSE=${VERBOSE:-TRUE}
+
 ! [ -n "$SOURCE_DIRECTORY" -a -d "$SOURCE_DIRECTORY" ] && echo "*Directory not given*" && usage && exit 2
-! [ -n "$COMPUTE_METHOD" ] && info "*Compute Method is Default*"
+
+info "* Compute Method: $COMPUTE_METHOD"
+info "* Source(s) Directory: $SOURCE_DIRECTORY"
+[[ "$COMPUTE_METHOD" == @("expensive"|"fractal") ]]  && info "Fractal Level: $FRACTAL_LEVEL"
