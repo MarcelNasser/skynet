@@ -3,6 +3,8 @@ import pathlib
 import sys
 from logging import getLogger, basicConfig, INFO, DEBUG, ERROR
 import warnings
+import time
+from datetime import datetime, timedelta
 
 from scipy.io.wavfile import WavFileWarning
 
@@ -57,10 +59,11 @@ def fft_audio(opt):
         logger.setLevel(DEBUG)
     _start_plot()
     # Plot in reverse order, so that the first fft is on top
-    for i, a in enumerate(reversed(opt.audio)):
-        logger.info(f"audio file: {a}")
-        rate, audio_data = _read_audio(a)
-        _plot_audio(rate=rate, audio_data=audio_data, label=f"{a} ({int(audio_data.size/rate)}s)")
+    for i, file in enumerate(reversed(opt.audio)):
+        logger.info(f"audio file: {file}")
+        duration, rate, audio_data = _read_audio(file)
+        _plot_audio(rate=rate, audio_data=audio_data,
+                    label=f"{file} ({duration})")
     _end_plot(opt)
 
 
@@ -76,7 +79,9 @@ def _end_plot(opt):
     if opt.show[0] == 'yes':
         plot.show()
     logger.debug(f"output: {opt.output}")
-    plot.savefig(opt.output)
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=UserWarning)
+        plot.savefig(opt.output)
 
 
 def _scale(arr: numpy.array):
@@ -97,12 +102,23 @@ def _scale_re(arr: numpy.array):
     return numpy.abs(numpy.real(arr)) / float(len(arr)) + THRESHOLD
 
 
+def _to_duration(ss):
+    if ss < 60:
+        return datetime.strptime(f"{round(ss, 6)}", "%S.%f").strftime(
+            "%M:%S.%f")[:-4]
+    elif 60 <= ss < 60*60:
+        return datetime.strptime(f"{round(ss/60)}:{round(ss % 60, 6)}", "%M:%S.%f").strftime(
+            "%M:%S.%f")[:-4]
+    else:
+        Exception("Duration(s) Above A Hour Not Implemented")
+
+
 def _read_audio(file_name):
     try:
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=WavFileWarning)
             rate, audio_data = wavfile.read(file_name)
-            return rate, audio_data
+            return _to_duration(audio_data.size/rate/2), rate, audio_data
     except FileNotFoundError as error:
         logger.error(error)
         exit(2)
