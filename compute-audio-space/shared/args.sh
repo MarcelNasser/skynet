@@ -20,4 +20,4 @@ VERBOSE=${VERBOSE:-TRUE}
 
 info "* Compute Method: $COMPUTE_METHOD"
 info "* Source(s) Directory: $SOURCE_DIRECTORY"
-[[ "$COMPUTE_METHOD" == @("expensive"|"fractal") ]]  && info "Fractal Level: $FRACTAL_LEVEL"
+[[ "$COMPUTE_METHOD" == @("expensive"|"fractal") ]]  && info "* Fractal Level: $FRACTAL_LEVEL"
