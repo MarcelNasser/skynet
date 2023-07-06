@@ -60,7 +60,7 @@ def fft_audio(opt):
     for i, a in enumerate(reversed(opt.audio)):
         logger.info(f"audio file: {a}")
         rate, audio_data = _read_audio(a)
-        _plot_audio(rate=rate, audio_data=audio_data, label=f"{a} ({int(audio_data.size/rate)}s)")
+        _plot_audio(rate=rate, audio_data=audio_data, label=f"{a} ({int(audio_data.size/rate/2)}s)")
     _end_plot(opt)
 
 
