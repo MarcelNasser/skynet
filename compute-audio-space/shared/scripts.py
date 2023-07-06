@@ -79,7 +79,9 @@ def _end_plot(opt):
     if opt.show[0] == 'yes':
         plot.show()
     logger.debug(f"output: {opt.output}")
-    plot.savefig(opt.output)
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=UserWarning)
+        plot.savefig(opt.output)
 
 
 def _scale(arr: numpy.array):
