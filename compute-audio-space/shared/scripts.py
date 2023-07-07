@@ -21,26 +21,17 @@ FRACTAL_DIVISION_LIMIT = 0.1
 
 
 class Color:
-    COLORS_PALETTE = [
-        "xkcd:reddish orange", "xkcd:lime green",
-        "xkcd:sky blue", "xkcd:neon blue",
-        "xkcd:umber", "xkcd:golden yellow"
-    ]
-    N_SHADES = 6
+
+    N_SHADES = 10
 
     def __init__(self):
         self.index = -1
-        self.len = len(self.COLORS_PALETTE)
         c = numpy.arange(1, self.N_SHADES + 1)
         norm = matplotlib.colors.Normalize(vmin=c.min(), vmax=c.max())
         self.cmap = matplotlib.cm.ScalarMappable(norm=norm, cmap=matplotlib.cm.Set1)
         self.cmap.set_array([])
 
     def next(self):
-        self.index += 1
-        return self.COLORS_PALETTE[self.index % self.len]
-
-    def next2(self):
         self.index += 1
         return self.cmap.to_rgba(self.index % self.N_SHADES)
 
@@ -118,7 +109,7 @@ def _read_audio(file_name):
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=WavFileWarning)
             rate, audio_data = wavfile.read(file_name)
-            return _to_duration(audio_data.size/rate/2), rate, audio_data
+            return _to_duration(audio_data.size/rate/len(audio_data.shape)), rate, audio_data
     except FileNotFoundError as error:
         logger.error(error)
         exit(2)
@@ -134,7 +125,7 @@ def _plot_audio(rate, audio_data, label):
         amplitude = _scale(numpy.fft.fft(audio_data))  # take the fourier transform of left channel
     freq = numpy.arange(0, n, 1.0) * (rate / n) / 1000
     logger.info(f"#_freq={n}, min_freq={freq[0]}(khz), max_freq={freq[-1]}(khz)")
-    plot.plot(freq, numpy.log10(amplitude), color=color.next2(), label=label)
+    plot.plot(freq, numpy.log10(amplitude), color=color.next(), label=label)
     return
 
 
