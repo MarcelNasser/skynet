@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+function usage() {
+    echo -e \
+"Usage:
+  bash transform-av/reverse/run -s source_directory
+  play backward audio files in the source directory.
+  Arguments:
+   - s: target directory
+  "
+}
+
+source "$(dirname "$0")/../shared/utils.sh"
+
+source "$(dirname "$0")/../shared/args.sh"
+
+
+#Dependencies check
+dependencies
+
+#Overload compute functions
+function pre() {
+  directory=$(realpath "$SOURCE_DIRECTORY")
+  [ -d "$directory/.reversed/" ] && { debug "-- clearing .reversed directory"; rm -r "$directory/.reversed/"; }
+  [ -d "$directory/.palindromic/" ] && { debug "-- clearing .palindromic directory"; rm -r "$directory/.palindromic/"; }
+  mkdir "$directory/.reversed/"
+  mkdir "$directory/.palindromic/"
+}
+
+function post() {
+  return
+}
+
+function compute() {
+  file=$1
+  ffmpeg -y -i "$file" -map 0 -c:v copy -af "areverse" "./.reversed/${file,,}" >/dev/null 2>/dev/null \
+      && ffmpeg -y -i "$file" -i "./.reversed/${file,,}" -filter_complex "[0:a][1:a]concat=n=2:v=0:a=1" "./.palindromic/${file,,}" >/dev/null 2>/dev/null \
+      && total=$total+1 ;
+}
+
+#Main Loop
+loop '.wav'
