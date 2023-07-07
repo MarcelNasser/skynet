@@ -27,4 +27,4 @@ jobs:
       with:
         context: "{{defaultContext}}:.build/dvc"
         push: true
-        tags: marcelndeffo/tools:dvc-monthly
+        tags: marcelndeffo/tools:dvc
