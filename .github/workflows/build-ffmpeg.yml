@@ -28,4 +28,4 @@ jobs:
       with:
         context: "{{defaultContext}}:.build/ffmpeg"
         push: true
-        tags: marcelndeffo/tools:ffmpeg-weekly
+        tags: marcelndeffo/tools:ffmpeg

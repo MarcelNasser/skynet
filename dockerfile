@@ -1,5 +1,5 @@
 ### stage 1: building python
-FROM marcelndeffo/tools:ffmpeg-weekly as pre-build
+FROM marcelndeffo/tools:ffmpeg as pre-build
 
 WORKDIR /src/
 
@@ -13,7 +13,7 @@ COPY requirements-python.txt .
 RUN pip install -r requirements-python.txt
 
 ### stage 2: final image
-FROM marcelndeffo/tools:ffmpeg-weekly
+FROM marcelndeffo/tools:ffmpeg
 
 USER root
 
