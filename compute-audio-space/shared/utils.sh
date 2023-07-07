@@ -25,6 +25,13 @@ function install-ffmpeg(){
   esac
 }
 
+function install-package(){
+  $PYTHON_BIN -m pip --version > /dev/null 2>/dev/null \
+      ||  { info "pip not present. installing .."; curl https://bootstrap.pypa.io/get-pip.py  2>/dev/null | $PYTHON_BIN || exit 2; }
+  info "installing .. '$1'"
+  $PYTHON_BIN -m pip install scipy >/dev/null 2>/dev/null || { info "'$1' installation failed"; exit 2; }
+}
+
 function dependencies(){
   debug "=> dependencies: checking [ffmpeg/python]"
   ffmpeg -version >/dev/null 2>/dev/null || { info "missing dependency ffmpeg. installing .."; install-ffmpeg; }
@@ -32,11 +39,8 @@ function dependencies(){
       ||  { info "Python version is not between 3.0 and 3.11 [detected: $($PYTHON_BIN --version)]"; exit 2; }
   $PYTHON_BIN -m pip --version > /dev/null 2>/dev/null \
       ||  { info "pip not present. installing .."; curl https://bootstrap.pypa.io/get-pip.py  2>/dev/null | $PYTHON_BIN || exit 2; }
-  $PYTHON_BIN -c "import scipy" >/dev/null 2>/dev/null \
-      || { info "scipy not present. installing .."; $PYTHON_BIN -m pip install scipy >/dev/null 2>/dev/null; }
-  $PYTHON_BIN -c "import matplotlib" >/dev/null 2>/dev/null \
-      || { info "matplotlib not present. installing .."; $PYTHON_BIN -m pip install matplotlib >/dev/null 2>/dev/null; }
-  $PYTHON_BIN -c "import numpy" >/dev/null 2>/dev/null \
-      || { info "numpy not present. installing .."; $PYTHON_BIN -m pip install numpy >/dev/null 2>/dev/null; }
+  $PYTHON_BIN -c "import scipy" >/dev/null 2>/dev/null  || install-package scypi
+  $PYTHON_BIN -c "import matplotlib" >/dev/null 2>/dev/null || install-package matplotlib
+  $PYTHON_BIN -c "import numpy" >/dev/null 2>/dev/null || install-package numpy
 }
 
