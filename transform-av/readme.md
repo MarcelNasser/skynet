@@ -8,9 +8,9 @@ Convert audio files from a directory (a-b-c-d) to:
  
 **run the script**
 ```bash
-bash reverse-audio/run -s target_directory
+bash transform-av/reverse/run -s target_directory
 
 #Example:
  
-bash reverse-audio/run -s /c/Users/marce/Maths/Data/Audio/Mix
+bash transform-av/reverse/run -s /c/Users/marce/Maths/Data/Audio/Unittest
 ```

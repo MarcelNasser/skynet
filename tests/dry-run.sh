@@ -6,16 +6,19 @@ source "$(dirname "$0")/utils.sh"
 
 # initial checksum
 # shellcheck disable=SC2012
-checksum_1=$(ls -lnAR --time-style=+%s tests/data/void | md5sum|cut -d ' ' -f1)
+checksum_1=$(find tests/data/void/ -type f | md5sum|cut -d ' ' -f1)
 echo "#1 dry run of 'compute-audio-space'"
 bash compute-audio-space/run -s tests/data/void >/dev/null  || error
-echo "#2 dry run of 'reverse-audio'"
-bash reverse-audio/run -s tests/data/void >/dev/null || error
-echo "#3 dry run of 'browse-github'"
+echo "#2 dry run of 'browse-github'"
 bash browse-github/run -o xxx >/dev/null 2>/dev/null || error
-echo "#4 check if no files modified with checksums"
+echo "#3 dry run of 'reverse-audio'"
+bash transform-av/reverse/run -s tests/data/void >/dev/null || error
+echo "#4 dry run of 'downsize-video'"
+bash transform-av/downsize/run -s tests/data/void >/dev/null || error
+echo "#5 check if no files modified with checksums"
 # shellcheck disable=SC2012
 # final checksum
-checksum_2=$(ls -lnAR --time-style=+%s tests/data/void | md5sum|cut -d ' ' -f1)
+checksum_2=$(find tests/data/void/ -type f | md5sum|cut -d ' ' -f1)
+[ -n "$DEBUG" ] && echo -e "  * checksum #1=$checksum_1 \n  * checksum #2=$checksum_2"
 [ "$checksum_1" != "$checksum_2" ] && error
 echo "#alright!"

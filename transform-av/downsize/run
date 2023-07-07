@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+function usage() {
+    echo -e \
+"Usage:
+  bash transform-av/downsize/run -s source_directory
+  Downsize by a factor 2 all MP4s into the directory. Old files are copied into '.orig' directory.
+  Arguments:
+   - s: target directory
+  "
+}
+
+source "$(dirname "$0")/../shared/utils.sh"
+
+source "$(dirname "$0")/../shared/args.sh"
+
+
+#Dependencies check
+dependencies
+
+#Overload compute functions
+function pre() {
+  directory=$(realpath "$SOURCE_DIRECTORY")
+  [ ! -d "$directory/.orig/" ] && mkdir "$directory/.orig/"
+}
+
+function post() {
+  info "+ alright!"
+}
+
+function decrease(){
+  ii=$1
+  if [ $((ii*7/10%2)) -eq 1 ]; then
+    echo $((ii*7/10+1))
+  else
+    echo $((ii*7/10))
+  fi
+}
+
+function compute() {
+  file=$1
+  read -r iw ih <<< "$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s="\ ":p=0 "$file")"
+  debug "- downscaling file: $file ($iw:$ih) -> ($(decrease iw):$(decrease ih))"
+  ffmpeg -nostdin -y -i "$file" -vf scale="$(decrease iw):$(decrease ih)" -acodec copy "${file//.mp4/.y.mp4}" 2>/dev/null || \
+  { info "- cannot downscale file: $file"; [ -f "${file//.mp4/.y.mp4}" ] && rm "${file//.mp4/.y.mp4}"; return 2; }
+  if [ ! "${file: -6}" == ".y.mp4" ]; then mv "$file" .orig/;else rm "$file"; fi
+}
+
+#Main Loop
+loop '.mp4'
