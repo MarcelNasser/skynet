@@ -37,8 +37,6 @@ function dependencies(){
   ffmpeg -version >/dev/null 2>/dev/null || { info "missing dependency ffmpeg. installing .."; install-ffmpeg; }
   $PYTHON_BIN --version | grep -E "Python 3.([1-9]|1[0-1])\..*" >/dev/null \
       ||  { info "Python version is not between 3.0 and 3.11 [detected: $($PYTHON_BIN --version)]"; exit 2; }
-  $PYTHON_BIN -m pip --version > /dev/null 2>/dev/null \
-      ||  { info "pip not present. installing .."; curl https://bootstrap.pypa.io/get-pip.py  2>/dev/null | $PYTHON_BIN || exit 2; }
   $PYTHON_BIN -c "import scipy" >/dev/null 2>/dev/null  || install-package scypi
   $PYTHON_BIN -c "import matplotlib" >/dev/null 2>/dev/null || install-package matplotlib
   $PYTHON_BIN -c "import numpy" >/dev/null 2>/dev/null || install-package numpy
