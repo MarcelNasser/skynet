@@ -11,16 +11,16 @@ function debug() {
 function ffmpeg-arch(){
   curl https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-"$1"-gpl"$2" -Lo ffmpeg"$2" 2>/dev/null && \
   $PYTHON_BIN -m "$3" -e ffmpeg"$2" &&\
-  sudo install ffmpeg-master-latest-"$1"-gpl/bin/* /usr/local/bin && \
+  "$4" install ffmpeg-master-latest-"$1"-gpl/bin/* /usr/local/bin && \
   rm -r ffmpeg-master-latest-"$1"-gpl ffmpeg"$2"
 }
 
 function install-ffmpeg(){
   OS=$(uname)
   case $OS in
-    Linux) ffmpeg-arch "linux64" ".tar.xz" "tarfile";;
+    Linux) ffmpeg-arch "linux64" ".tar.xz" "tarfile" "sudo";;
     Darwin) brew install ffmpeg;;
-    [CYGWIN*]|[CYGWIN*]) ffmpeg-arch "win64" ".zip" "zipfile";;
+    [CYGWIN*]|[CYGWIN*]) ffmpeg-arch "win64" ".zip" "zipfile" "";;
     *) info "Do know how to install 'Ffmpeg"; exit 2;;
   esac
 }
