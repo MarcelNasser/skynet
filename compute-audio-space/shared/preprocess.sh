@@ -34,7 +34,7 @@ function preprocess(){
   done <<< "$list"
   cd "$CWD" || exit 2
   #chop audio file to check fractal conservation (method==expensive)
-  [[ "$COMPUTE_METHOD" == @("expensive"|"fractal") ]] && chop-audio-audios
+  #[[ "$COMPUTE_METHOD" == @("expensive"|"fractal") ]] && chop-loop
 }
 
 function chop(){
@@ -51,7 +51,7 @@ function chop(){
 function wipe-chops(){
   debug "-- clearing old '.y.wav'"
   old_chopped=$(find "." -maxdepth 1 -iname '*.y.wav')
-  [ -z "$old_chopped" ] && return 0
+  [ -z "$old_chopped" ] && return
   local filename
   while read -r filename; do
       rm "$filename"
@@ -62,24 +62,3 @@ function yy() {
   for ((i=1; i<=$1; i++)); do echo -n '.y'; done
 }
 
-function chop-audio-audios(){
-  audio_audios=$(realpath "$SOURCE_DIRECTORY")
-  debug "=> chopping audio audios"
-  cd "$audio_audios" || exit 2
-  wipe-chops
-  local list
-  list=$(find "." -maxdepth 1 -iname '*.wav')
-  [ "${#list[@]}" -eq 0 ] && debug "x no audio audios found" && exit 0
-  debug "+ audio file(s) found"
-  debug "${list[*]}"
-  debug "+ chopping audio file(s)"
-  local filename
-  while read -r filename; do
-    [ -z "$filename" ] && continue
-    debug "+ original: $filename"
-    for i in $(seq 1 "$FRACTAL_LEVEL"); do
-      chop "$(for ((j=$((i-1)); j<="$i"; j++)); do echo "${filename//.wav/$(yy "$j").wav}"; done)" || exit 2
-    done
-  done <<< "${list[@]}"
-  cd "$CWD" || exit 2
-}
