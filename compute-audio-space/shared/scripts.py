@@ -1,4 +1,5 @@
 import argparse
+import math
 import pathlib
 import sys
 from logging import getLogger, basicConfig, INFO, DEBUG, ERROR
@@ -18,19 +19,19 @@ THRESHOLD = 1.E-15
 
 
 class Color:
-    N_SHADES = 100
+    N_SHADES = 10
 
     def __init__(self, n_shades):
         self.n_shades = max(n_shades, self.N_SHADES)
-        self.index = -1
+        self._index = -1
         c = numpy.arange(1, self.n_shades + 1)
         norm = matplotlib.colors.Normalize(vmin=c.min(), vmax=c.max())
         self.cmap = matplotlib.cm.ScalarMappable(norm=norm, cmap=matplotlib.cm.Set1)
         self.cmap.set_array([])
 
     def next(self):
-        self.index += 1
-        return self.cmap.to_rgba(self.index % self.n_shades)
+        self._index += 1
+        return self.cmap.to_rgba(self._index % self.n_shades)
 
 
 def fft_audio(opt):

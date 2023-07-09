@@ -26,7 +26,7 @@ function install-ffmpeg(){
 }
 
 function dependencies(){
-  info "+ dependencies: checking [ffmpeg/python]"
+  debug "+ dependencies: checking [ffmpeg/python]"
   ffmpeg -version >/dev/null 2>/dev/null || { info "missing dependency ffmpeg. installing .."; install-ffmpeg; }
   $PYTHON_BIN --version | grep -E "Python 3.([1-9]|1[0-1])\..*" >/dev/null \
       ||  { info "Python version is not between 3.0 and 3.11 [detected: $($PYTHON_BIN --version)]"; exit 2; }
@@ -49,7 +49,7 @@ function loop() {
   CWD=$PWD
   directory=$(realpath "$SOURCE_DIRECTORY")
   declare -i total=0
-  info "+ computation loop (do not interrupt)"
+  debug "+ computation loop (do not interrupt)"
   #Reversion Loop
   cd "$directory" || exit 2
   for file in $(cd "$directory" && find "." -maxdepth 1 -iname "*$1"); do

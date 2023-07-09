@@ -30,11 +30,9 @@ dependencies
 preprocess
 
 #Compute FFT of original / reverted / palindromic audio file
-[[ "$COMPUTE_METHOD" == @("expensive"|"default") ]] && compute-p
+if [[ "$COMPUTE_METHOD" == @("expensive"|"default") ]]; then compute-p; fi
 
 #Compute FFT of original / chop #1 / chop #2
-[[ "$COMPUTE_METHOD" == "fractal" ]] && compute-f
-
-#if [[ "$COMPUTE_METHOD" == @("expensive"|"fractal") ]]; then { cd "$SOURCE_DIRECTORY" && wipe-chops; }; fi
+if [[ "$COMPUTE_METHOD" == "fractal" ]]; then compute-f; fi
 
 
