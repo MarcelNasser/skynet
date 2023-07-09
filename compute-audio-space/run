@@ -35,6 +35,6 @@ preprocess
 #Compute FFT of original / chop #1 / chop #2
 [[ "$COMPUTE_METHOD" == "fractal" ]] && compute-f
 
-if [[ "$COMPUTE_METHOD" == @("expensive"|"fractal") ]]; then { cd "$SOURCE_DIRECTORY" && wipe-chops; }; fi
+#if [[ "$COMPUTE_METHOD" == @("expensive"|"fractal") ]]; then { cd "$SOURCE_DIRECTORY" && wipe-chops; }; fi
 
 

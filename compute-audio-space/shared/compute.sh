@@ -38,9 +38,12 @@ function compute-f() {
   debug "=> entering computation loop";
   while read -r filename; do
       [ -z "$filename" ] && continue
-      { readarray files <<< "$(for ((j="$FRACTAL_LEVEL"; j>=0; j--)); do echo "$audio_files/${filename//.wav/$(yy "$j").wav}"; done)";
-        debug "++ file #$total: $filename"\
-      && python3 "$root_dir/shared/scripts.py" fft -a "${files[@]/$'\n'}"  -o "$audio_files/.fft/${filename,,}.png" \
-           && ((total++)); }
+      for i in $(seq 1 "$FRACTAL_LEVEL"); do
+        chop "$(for ((j=$((i-1)); j<="$i"; j++)); do echo "$audio_files/${filename//.wav/$(yy "$j").wav}"; done)" || exit 2
+      done
+      readarray files <<< "$(for ((j="$FRACTAL_LEVEL"; j>=0; j--)); do echo "$audio_files/${filename//.wav/$(yy "$j").wav}"; done)"
+      debug "++ file #$total: $filename"
+      python3 "$root_dir/shared/scripts.py" fft -a "${files[@]/$'\n'}"  -o "$audio_files/.fft/${filename,,}.png" && ((total++))
+      rm -f "*.y.wav"
   done <<< "$list" && echo "{\"total\": $total}"
 }

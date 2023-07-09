@@ -34,7 +34,7 @@ function preprocess(){
   done <<< "$list"
   cd "$CWD" || exit 2
   #chop audio file to check fractal conservation (method==expensive)
-  [[ "$COMPUTE_METHOD" == @("expensive"|"fractal") ]] && chop-audio-audios
+  #[[ "$COMPUTE_METHOD" == @("expensive"|"fractal") ]] && chop-loop
 }
 
 function chop(){
@@ -62,7 +62,7 @@ function yy() {
   for ((i=1; i<=$1; i++)); do echo -n '.y'; done
 }
 
-function chop-audio-audios(){
+function chop-loop(){
   audio_audios=$(realpath "$SOURCE_DIRECTORY")
   debug "=> chopping audio audios"
   cd "$audio_audios" || exit 2
