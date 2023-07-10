@@ -52,4 +52,4 @@ jobs:
         run: |
           /src/tests/heavy-compute-audio.sh
           /src/tests/browse-github.sh
-          /src/tests/simu-human-hearing.sh
+          /src/tests/chop-and-interpolate.sh

@@ -104,7 +104,8 @@ function loop-compute-p() {
         $PYTHON_BIN "$root_dir/../shared/scripts.py" fft \
         -a "$audio_files/$filename" -o "$audio_files/.fft/${filename,,}.png" && ((total++))
       fi
-  done <<< "$list" && echo "{\"total\": $total}"
+  done <<< "$list"
+  echo "{\"total\": $total}"
   [[ "$COMPUTE_METHOD" == "expensive" ]] && { cd "$audio_files" && wipe-chops; } || true
 }
 
@@ -131,6 +132,7 @@ function loop-compute-f() {
       debug "++ file #$total: $filename"
       $PYTHON_BIN "$root_dir/../shared/scripts.py" fft -a "${files[@]/$'\n'}"  -o "$audio_files/.fft/${filename,,}.png" && ((total++))
       cd "$audio_files" && wipe-chops || true
-  done <<< "$list" && echo "{\"total\": $total}"
+  done <<< "$list"
+  echo "{\"total\": $total}"
 }
 

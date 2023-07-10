@@ -35,7 +35,7 @@ function preprocess(){
   cd "$CWD" || exit 2
   #chop audio file to check fractal conservation (method==expensive)
   [[ "$COMPUTE_METHOD" == "expensive" ]] && {
-    bash "$ROOT_DIR/../chop/run" -s "$SOURCE_DIRECTORY" -l "$FRACTAL_LEVEL" 2>/dev/null >/dev/null || exit 2
+    bash "$ROOT_DIR/../chop/run" -s "$SOURCE_DIRECTORY" -l "$FRACTAL_LEVEL" -m "no" 2>/dev/null >/dev/null || exit 2
   }
 }
 

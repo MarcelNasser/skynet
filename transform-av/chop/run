@@ -22,12 +22,14 @@ source "$(dirname "$0")/args.sh"
 #Overload compute functions
 function pre() {
   directory=$(realpath "$SOURCE_DIRECTORY")
-  [ ! -d "$directory/.chopped/" ] && mkdir "$directory/.chopped/"
+  [ -d "$directory/.chopped/" ] && { debug "-- clearing '.chopped' directory"; rm -r "$directory/.chopped/"; }
+  mkdir "$directory/.chopped/"
   wipe-chops
   debug "+ chopping audio file(s)"
 }
 
 function post() {
+  [ "$MOVE_CHOPS" == "yes" -a "$FRACTAL_LEVEL" -gt 0 ] && mv "$SOURCE_DIRECTORY"/*.y.wav "$SOURCE_DIRECTORY/.chopped/" || true
   info "+ alright!"
 }
 

@@ -80,7 +80,7 @@ def _end_plot(opt, fig, subplots):
         plot.savefig(opt.output)
 
 
-def _scale_re(arr: numpy.array) -> numpy.array:
+def _scale_re(arr: numpy.ndarray) -> numpy.ndarray:
     """
     in: complex numpy array
     """
@@ -89,7 +89,7 @@ def _scale_re(arr: numpy.array) -> numpy.array:
     return numpy.sign(numpy.real(arr)) * numpy.log10(numpy.abs(numpy.real(arr)) + THRESHOLD)
 
 
-def _scale_im(arr: numpy.array) -> numpy.array:
+def _scale_im(arr: numpy.ndarray) -> numpy.ndarray:
     """
     in: complex numpy array
     """
@@ -109,7 +109,7 @@ def _to_duration(ss) -> str:
         Exception("Duration(s) Above A Hour Not Implemented")
 
 
-def _read_audio(file_name) -> (str, float, numpy.array):
+def _read_audio(file_name) -> (str, float, numpy.ndarray):
     try:
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=WavFileWarning)
@@ -122,7 +122,7 @@ def _read_audio(file_name) -> (str, float, numpy.array):
         raise
 
 
-def _compute_fft(audio_data) -> numpy.array:
+def _compute_fft(audio_data) -> numpy.ndarray:
     if len(audio_data.shape) == 2:
         fft_data = numpy.fft.fft(audio_data.sum(axis=1) / 2)
     else:
@@ -155,10 +155,10 @@ def int_audio(opt):
     logger.info(f"audio file: {opt.audio}")
     duration, rate, audio_data = _read_audio(opt.audio)
     new_audio_data = _interpolate(audio_data, opt.factor[0])
-    wavfile.write(opt.output, rate, new_audio_data.astype(numpy.int16))
+    wavfile.write(opt.output, rate, numpy.real(new_audio_data).astype(numpy.int16))
 
 
-def _interpolate(audio_data, padding) -> numpy.array:
+def _interpolate(audio_data, padding) -> numpy.ndarray:
     if len(audio_data.shape) == 2:
         fft_data = numpy.array(numpy.fft.fft(audio_data[:, 0]), numpy.fft.fft(audio_data[:, 1]))
         padded_fft = numpy.array(numpy.insert(fft_data[:, 0], numpy.repeat(range(1, len(audio_data)), (padding - 1)), 0, axis=0),
@@ -183,7 +183,7 @@ if __name__ == "__main__":
     sub.set_defaults(func=fft_audio)
     sub_1 = subparsers.add_parser("int", help="interpolate audio file(s)")
     sub_1.add_argument("--audio", "-a", help=f"audio file(s)", nargs="?", type=pathlib.Path)
-    sub_1.add_argument("--factor", "-f", help=f"factor number x audio duration", nargs=1, type=int, default=2)
+    sub_1.add_argument("--factor", "-f", help=f"factor number x audio duration", nargs=1, type=int, default=[2])
     sub_1.add_argument("--output", "-o", help=f"output interpolate", nargs="?", type=pathlib.Path)
     sub_1.add_argument("--debug", "-d", help=f"debug mode", action='store_true')
     sub_1.set_defaults(func=int_audio)
