@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # load utility functions
-source "$(dirname "$0")/utils.sh"
+source "$(dirname "$0")/../transform-av/shared/utils.sh"
 ROOT_DIR="$(dirname "$0")"/..
 
 # check 'docker' has at least 100 public repos on github

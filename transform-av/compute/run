@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+function usage() {
+    echo -e \
+"Usage:
+  bash transform-av/compute/run -s source_directory -m method
+  compute non-variant space from audio files in the source directory.
+  Arguments:
+   - s: target directory
+   - m: compute method [default/reverse/expensive/fractal]
+   - l: fractal level for the recursive chopping
+  "
+}
+
+
+ROOT_DIR=$(dirname "$0")
+
+#Load source(s)
+source "$ROOT_DIR/../shared/utils.sh"
+source "$ROOT_DIR/../shared/preprocess.sh"
+
+#Load arguments
+source "$ROOT_DIR/args.sh"
+
+#Dependencies check
+dependencies
+dependencies_compute
+
+#preprocess audio files
+preprocess
+
+#Compute FFT of original / reverted / palindromic audio file
+if [[ "$COMPUTE_METHOD" == @("expensive"|"default"|"reverse") ]]; then loop-compute-p; fi
+
+#Compute FFT of original / chop #1 / chop #2
+if [[ "$COMPUTE_METHOD" == "fractal" ]]; then loop-compute-f; fi
+
+

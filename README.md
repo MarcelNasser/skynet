@@ -44,9 +44,11 @@ There are additional readme files into scripts directory. Those readmes explain 
 
 ## Testing
 Tests Suite is written in Bash.
-- test case `dry-run.sh`: check if scripts are doing no harm for a dry-run
-- test case `compute-audio.sh`: check if the computation of audio files output files in expected types 
+- test case `dry-run.sh`: run scripts with arguments to zero and check if nothing is done + no error thrown
+- test case `compute-audio.sh`: check if the computational scripts output files in expected types 
 - test case `browse-github.sh`: check 'docker' has at least 100 public repos on GitHub
+- test case `heavy-compute-audio.sh`: run expensive computation and check outputs file are in type and number expected
+- test case `chop-and-interpolate.sh`: check if an original audio can back interpolated 
 
 ## Build & Automation
 A docker image is built to ease the run of scripts herein on remote machines. 
@@ -68,7 +70,7 @@ root@d9efa96261a9:/src# browse-github/run -o facebook
 repos 127
 # do some stuff...
 root@d9efa96261a9:/src# tests/dry-run.sh
-root@d9efa96261a9:/src# tests/compute-audio-heavy.sh
+root@d9efa96261a9:/src# tests/heavy-compute-audio.sh
 #exit
 root@d9efa96261a9:/src# exit
 ````
@@ -81,7 +83,7 @@ docker compose run ops-scripts
 ````
 
 - inside the docker container the filestructure is:
-````
+````txt
 /src/
  |__ script-a
     |__ run
@@ -90,3 +92,5 @@ docker compose run ops-scripts
 /data/
  |__ audio
 ````
+
+*Note: Do not forget the edit docker-compose file to mount data onto your audios directory from your local machine.*

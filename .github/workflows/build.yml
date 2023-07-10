@@ -38,7 +38,7 @@ jobs:
         push: true
         tags: marcelndeffo/tools:ops-scripts
 
-  test:
+  test-github:
     needs: build
     if: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
@@ -50,5 +50,32 @@ jobs:
       - name: Run Test Suite
         id: test_docker
         run: |
-          /src/tests/compute-audio-heavy.sh
           /src/tests/browse-github.sh
+
+  test-av-1:
+    needs: build
+    if: ${{ github.ref != 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    container:
+      image: marcelndeffo/tools:ops-scripts-${{ github.sha }}
+      env:
+        VERBOSE: "TRUE"
+    steps:
+      - name: Computation Tests
+        id: test_docker
+        run: |
+          /src/tests/heavy-compute-audio.sh
+
+  test-av-2:
+    needs: build
+    if: ${{ github.ref != 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    container:
+      image: marcelndeffo/tools:ops-scripts-${{ github.sha }}
+      env:
+        VERBOSE: "TRUE"
+    steps:
+      - name: Simulation Tests
+        id: test_docker
+        run: |   
+          /src/tests/chop-and-interpolate.sh

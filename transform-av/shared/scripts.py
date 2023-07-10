@@ -1,5 +1,6 @@
 import argparse
 import math
+import os
 import pathlib
 import sys
 from logging import getLogger, basicConfig, INFO, DEBUG, ERROR
@@ -50,8 +51,14 @@ def fft_audio(opt):
         logger.info(f"audio file: {file}")
         duration, rate, audio_data = _read_audio(file)
         _plot_audio(rate=rate, audio_data=audio_data,
-                    label=f"{file} ({duration})", subplots=subplots, color=color.next())
+                    label=f"{_file_name(file)} ({duration})",
+                    subplots=subplots, color=color.next())
     _end_plot(opt, fig, subplots)
+
+
+def _file_name(file):
+    chunks = str(file).split(sep=os.sep)
+    return f"{chunks[-2]}/{chunks[-1]}" if len(chunks) > 1 and str(chunks[-2]).startswith('.') else str(chunks[-1])
 
 
 def _start_plot(height: int, width: int):
@@ -73,7 +80,7 @@ def _end_plot(opt, fig, subplots):
         plot.savefig(opt.output)
 
 
-def _scale_re(arr: numpy.array):
+def _scale_re(arr: numpy.ndarray) -> numpy.ndarray:
     """
     in: complex numpy array
     """
@@ -82,7 +89,7 @@ def _scale_re(arr: numpy.array):
     return numpy.sign(numpy.real(arr)) * numpy.log10(numpy.abs(numpy.real(arr)) + THRESHOLD)
 
 
-def _scale_im(arr: numpy.array):
+def _scale_im(arr: numpy.ndarray) -> numpy.ndarray:
     """
     in: complex numpy array
     """
@@ -91,7 +98,7 @@ def _scale_im(arr: numpy.array):
     return numpy.sign(numpy.imag(arr)) * numpy.log10(numpy.abs(numpy.imag(arr)) + THRESHOLD)
 
 
-def _to_duration(ss):
+def _to_duration(ss) -> str:
     if ss < 60:
         return datetime.strptime(f"{round(ss, 6)}", "%S.%f").strftime(
             "%M:%S.%f")[:-4]
@@ -102,7 +109,7 @@ def _to_duration(ss):
         Exception("Duration(s) Above A Hour Not Implemented")
 
 
-def _read_audio(file_name):
+def _read_audio(file_name) -> (str, float, numpy.ndarray):
     try:
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=WavFileWarning)
@@ -115,12 +122,17 @@ def _read_audio(file_name):
         raise
 
 
-def _plot_audio(rate, audio_data, label, subplots, color):
-    n = len(audio_data)
+def _compute_fft(audio_data) -> numpy.ndarray:
     if len(audio_data.shape) == 2:
         fft_data = numpy.fft.fft(audio_data.sum(axis=1) / 2)
     else:
         fft_data = numpy.fft.fft(audio_data)
+    return fft_data
+
+
+def _plot_audio(rate, audio_data, label, subplots, color) -> None:
+    n = len(audio_data)
+    fft_data = _compute_fft(audio_data)
     freq = numpy.arange(0, n, 1.0) * (rate / n) / 1000
     logger.info(f"#_freq={n}, min_freq={freq[0]}(khz), max_freq={freq[-1]}(khz)")
     subplots[0].plot(freq, _scale_re(fft_data), color=color, label=label)
@@ -130,17 +142,51 @@ def _plot_audio(rate, audio_data, label, subplots, color):
     return
 
 
+def int_audio(opt):
+    """
+    in: opt: command line option object.
+            Attributes:
+                 - audio: list of audio files
+                 - output: output file path for fft plot
+    """
+    assert opt.factor[0] > 1
+    if opt.debug:
+        logger.setLevel(DEBUG)
+    logger.info(f"audio file: {opt.audio}")
+    duration, rate, audio_data = _read_audio(opt.audio)
+    new_audio_data = _interpolate(audio_data, opt.factor[0])
+    wavfile.write(opt.output, rate, numpy.real(new_audio_data).astype(numpy.int16))
+
+
+def _interpolate(audio_data, padding) -> numpy.ndarray:
+    if len(audio_data.shape) == 2:
+        fft_data = numpy.array(numpy.fft.fft(audio_data[:, 0]), numpy.fft.fft(audio_data[:, 1]))
+        padded_fft = numpy.array(numpy.insert(fft_data[:, 0], numpy.repeat(range(1, len(audio_data)), (padding - 1)), 0, axis=0),
+                                 numpy.insert(fft_data[:, 1], numpy.repeat(range(1, len(audio_data)), (padding - 1)), 0, axis=0))
+        return numpy.array(numpy.fft.ifft(padded_fft[:, 0]), numpy.fft.ifft(padded_fft[:, 1]))
+    else:
+        fft_data = numpy.fft.fft(audio_data)
+        padded_fft = numpy.insert(fft_data, numpy.repeat(range(1, len(audio_data)), (padding - 1)), 0, axis=0)
+        return numpy.fft.ifft(padded_fft)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog="scripts")
     subparsers = parser.add_subparsers(help="select the action's command")
     sub = subparsers.add_parser("fft", help="compute fourier's transform")
-    sub.add_argument("--audio", "-a", help=f"audio(s) file", nargs="+", type=pathlib.Path)
+    sub.add_argument("--audio", "-a", help=f"audio file(s)", nargs="+", type=pathlib.Path)
     sub.add_argument("--figureHeight", "-fh", help=f"figure's height in centimeters", nargs=1, type=int, default=10)
     sub.add_argument("--figureWidth", "-fw", help=f"figure's width in centimeters", nargs=1, type=int, default=20)
     sub.add_argument("--show", "-s", help=f"show or hide plot", nargs=1, choices=['yes', 'no'], default='no')
     sub.add_argument("--debug", "-d", help=f"debug mode", action='store_true')
     sub.add_argument("--output", "-o", help=f"output fft", nargs="?", type=pathlib.Path)
     sub.set_defaults(func=fft_audio)
+    sub_1 = subparsers.add_parser("int", help="interpolate audio file(s)")
+    sub_1.add_argument("--audio", "-a", help=f"audio file(s)", nargs="?", type=pathlib.Path)
+    sub_1.add_argument("--factor", "-f", help=f"factor number x audio duration", nargs=1, type=int, default=[2])
+    sub_1.add_argument("--output", "-o", help=f"output interpolate", nargs="?", type=pathlib.Path)
+    sub_1.add_argument("--debug", "-d", help=f"debug mode", action='store_true')
+    sub_1.set_defaults(func=int_audio)
     args = parser.parse_args(args=None if sys.argv[1:] else ['--help'])
     try:
         args.func(args)
