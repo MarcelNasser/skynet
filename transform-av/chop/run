@@ -29,7 +29,10 @@ function pre() {
 }
 
 function post() {
-  [ "$MOVE_CHOPS" == "yes" -a "$FRACTAL_LEVEL" -gt 0 ] && mv "$SOURCE_DIRECTORY"/*.y.wav "$SOURCE_DIRECTORY/.chopped/" || true
+  old_chops=$(find "$SOURCE_DIRECTORY" -iname '*.y.wav')
+  if [ -n "${old_chops[*]}" ]; then
+    [ "$MOVE_CHOPS" == "yes" -a "$FRACTAL_LEVEL" -gt 0 ] && mv "$SOURCE_DIRECTORY"/*.y.wav "$SOURCE_DIRECTORY/.chopped/"|| true
+  fi
   info "+ alright!"
 }
 

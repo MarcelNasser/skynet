@@ -18,7 +18,7 @@ bash transform-av/downsize/run -s tests/data/void >/dev/null || error
 echo "#5 dry run of 'chop-audio'"
 bash transform-av/chop/run -s tests/data/void -l 10 >/dev/null || error
 echo "#6 dry run of 'interpolate-audio'"
-bash transform-av/interpolate/run -s tests/data/void -t 2 >/dev/null || error
+bash transform-av/interpolate/run -s tests/data/void -l 2 >/dev/null || error
 echo "#N check files checksums"
 # shellcheck disable=SC2012
 # final checksum

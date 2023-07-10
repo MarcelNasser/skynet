@@ -3,11 +3,12 @@
 function usage() {
     echo -e \
 "Usage:
-  bash transform-av/interpolate/run -s source_directory -f N
+  bash transform-av/interpolate/run -s source_directory -l N -m interpolation_method
   interpolate audio(s) to new duration N times than duration of the original sample.
   Arguments:
    - s: target directory
-   - f: multiply factor
+   - l: multiply factor
+   - m: interpolation method [zeros/linear]
   "
 }
 
@@ -35,7 +36,7 @@ function post() {
 function compute() {
   file=$1
   $PYTHON_BIN "$ROOT_DIR/shared/scripts.py" int -a "$file" \
-      -o ".interpolated/${file//.wav/$(xx "$MULTIPLY_FACTOR").wav}" \
+      -o ".interpolated/${file//.wav/$(xx "$((MULTIPLY_FACTOR/2))").wav}" -m "$INT_METHOD"\
       -f "$MULTIPLY_FACTOR" || error "Cannot interpolate '$file'"
 }
 

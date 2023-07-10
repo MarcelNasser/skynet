@@ -154,38 +154,63 @@ def int_audio(opt):
         logger.setLevel(DEBUG)
     logger.info(f"audio file: {opt.audio}")
     duration, rate, audio_data = _read_audio(opt.audio)
-    new_audio_data = _interpolate(audio_data, opt.factor[0])
+    if opt.method[0] == "zeros":
+        new_audio_data = _interpolate_zeros(audio_data, opt.factor[0])
+    else:
+        new_audio_data = _interpolate_linear(audio_data, rate, opt.factor[0])
     wavfile.write(opt.output, rate, numpy.real(new_audio_data).astype(numpy.int16))
 
 
-def _interpolate(audio_data, padding) -> numpy.ndarray:
+def _interpolate_zeros(audio_data: numpy.ndarray, factor: int) -> numpy.ndarray:
     if len(audio_data.shape) == 2:
-        fft_data = numpy.array(numpy.fft.fft(audio_data[:, 0]), numpy.fft.fft(audio_data[:, 1]))
-        padded_fft = numpy.array(numpy.insert(fft_data[:, 0], numpy.repeat(range(1, len(audio_data)), (padding - 1)), 0, axis=0),
-                                 numpy.insert(fft_data[:, 1], numpy.repeat(range(1, len(audio_data)), (padding - 1)), 0, axis=0))
-        return numpy.array(numpy.fft.ifft(padded_fft[:, 0]), numpy.fft.ifft(padded_fft[:, 1]))
+        fft_10 = numpy.fft.fft(audio_data[:, 0])
+        fft_11 = numpy.fft.fft(audio_data[:, 1])
+        int_10 = numpy.insert(fft_10, numpy.repeat(range(1, len(fft_10)), (factor - 1)), 0, axis=0)
+        int_11 = numpy.insert(fft_10, numpy.repeat(range(1, len(fft_11)), (factor - 1)), 0, axis=0)
+        return numpy.reshape([numpy.fft.ifft(int_10), numpy.fft.ifft(int_11)], (len(int_10), 2))
     else:
         fft_data = numpy.fft.fft(audio_data)
-        padded_fft = numpy.insert(fft_data, numpy.repeat(range(1, len(audio_data)), (padding - 1)), 0, axis=0)
-        return numpy.fft.ifft(padded_fft)
+        int_1 = numpy.insert(fft_data, numpy.repeat(range(1, len(fft_data)), (factor - 1)), 0, axis=0)
+        return numpy.fft.ifft(int_1)
+
+
+def _interpolate_linear(audio_data: numpy.ndarray, rate: float, factor: int) -> numpy.ndarray:
+    shape_0 = audio_data.shape
+    freq_0 = numpy.arange(0, shape_0[0], 1.0) * (rate / shape_0[0])
+    freq_1 = numpy.arange(0, shape_0[0] * factor, 1.0) * (rate / shape_0[0] / factor)
+    if len(audio_data.shape) == 2:
+        fft_10 = numpy.fft.fft(audio_data[:, 0])
+        fft_11 = numpy.fft.fft(audio_data[:, 1])
+        int_10 = numpy.interp(freq_1, freq_0, fft_10)
+        int_11 = numpy.interp(freq_1, freq_0, fft_11)
+        i_fft_10 = numpy.fft.ifft(int_10)
+        i_fft_11 = numpy.fft.ifft(int_11)
+        return numpy.reshape([i_fft_10, i_fft_11], (shape_0[0] * factor, 2))
+    else:
+        fft_data = numpy.fft.fft(audio_data)
+        int_data = numpy.interp(freq_1, freq_0, fft_data)
+        i_fft_data = numpy.fft.ifft(int_data)
+        return i_fft_data
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog="scripts")
     subparsers = parser.add_subparsers(help="select the action's command")
     sub = subparsers.add_parser("fft", help="compute fourier's transform")
-    sub.add_argument("--audio", "-a", help=f"audio file(s)", nargs="+", type=pathlib.Path)
-    sub.add_argument("--figureHeight", "-fh", help=f"figure's height in centimeters", nargs=1, type=int, default=10)
-    sub.add_argument("--figureWidth", "-fw", help=f"figure's width in centimeters", nargs=1, type=int, default=20)
-    sub.add_argument("--show", "-s", help=f"show or hide plot", nargs=1, choices=['yes', 'no'], default='no')
-    sub.add_argument("--debug", "-d", help=f"debug mode", action='store_true')
-    sub.add_argument("--output", "-o", help=f"output fft", nargs="?", type=pathlib.Path)
+    sub.add_argument("--audio", "-a", help="audio file(s)", nargs="+", type=pathlib.Path)
+    sub.add_argument("--figureHeight", "-fh", help="figure's height in centimeters", nargs=1, type=int, default=10)
+    sub.add_argument("--figureWidth", "-fw", help="figure's width in centimeters", nargs=1, type=int, default=20)
+    sub.add_argument("--show", "-s", help="show or hide plot", nargs=1, choices=['yes', 'no'], default='no')
+    sub.add_argument("--debug", "-d", help="debug mode", action='store_true')
+    sub.add_argument("--output", "-o", help="output fft", nargs="?", type=pathlib.Path)
     sub.set_defaults(func=fft_audio)
     sub_1 = subparsers.add_parser("int", help="interpolate audio file(s)")
-    sub_1.add_argument("--audio", "-a", help=f"audio file(s)", nargs="?", type=pathlib.Path)
-    sub_1.add_argument("--factor", "-f", help=f"factor number x audio duration", nargs=1, type=int, default=[2])
-    sub_1.add_argument("--output", "-o", help=f"output interpolate", nargs="?", type=pathlib.Path)
-    sub_1.add_argument("--debug", "-d", help=f"debug mode", action='store_true')
+    sub_1.add_argument("--audio", "-a", help="audio file(s)", nargs="?", type=pathlib.Path)
+    sub_1.add_argument("--factor", "-f", help="factor number x audio duration", nargs=1, type=int, default=[2])
+    sub_1.add_argument("--method", "-m", help="interpolation method", nargs=1, choices=['linear', 'zeros'],
+                       default='linear')
+    sub_1.add_argument("--output", "-o", help="output interpolate", nargs="?", type=pathlib.Path)
+    sub_1.add_argument("--debug", "-d", help="debug mode", action='store_true')
     sub_1.set_defaults(func=int_audio)
     args = parser.parse_args(args=None if sys.argv[1:] else ['--help'])
     try:

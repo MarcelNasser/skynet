@@ -14,12 +14,12 @@ Augmented files are suffixed by `.x.wav`
  
 **Run the script**
 ```bash
-$ bash transform-av/interpolate/run -s source_directory -f N 
+$ bash transform-av/interpolate/run -s source_directory -l N 
 ```
 
 **Example**
 ```bash
 ## s) source directory
-## f) augmentation factor
-$ bash transform-av/interpolate/run -s /c/Users/marce/Maths/Data/Audio/Unittest -f 2
+## l) augmentation factor
+$ bash transform-av/interpolate/run -s /c/Users/marce/Maths/Data/Audio/Unittest -l 2 -m "linear"
 ```
