@@ -17,6 +17,7 @@ FRACTAL_LEVEL=${FRACTAL_LEVEL:-2}
 VERBOSE=${VERBOSE:-TRUE}
 
 ! [ -n "$SOURCE_DIRECTORY" -a -d "$SOURCE_DIRECTORY" ] && echo "*Directory not found*" && usage && exit 2
+! [[ "$COMPUTE_METHOD" == @("expensive"|"reverse"|"fractal"|"default") ]] && echo "*Compute method '$COMPUTE_METHOD' not valid*" && usage && exit 2
 
 info "* Compute Method: $COMPUTE_METHOD"
 info "* Source(s) Directory: $SOURCE_DIRECTORY"

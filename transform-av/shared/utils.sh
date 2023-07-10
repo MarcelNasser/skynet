@@ -79,12 +79,14 @@ function loop() {
 
 #Compute Palindromic FFT
 function loop-compute-p() {
-  #Compute reverted audio files
   audio_files=$(realpath "$SOURCE_DIRECTORY")
   local root_dir
   root_dir=$(realpath "$(dirname "$0")")
-  debug "=> reverting audio files"
-  bash "$root_dir"/../reverse/run -s "$audio_files" > /dev/null
+  #Compute reverted audio files
+  if [[ "$COMPUTE_METHOD" == @("expensive"|"reverse") ]]; then
+    debug "=> reverting audio files"
+    bash "$root_dir"/../reverse/run -s "$audio_files" > /dev/null
+  fi
   #Compute FFT of original / reverted / palindromic audio file
   debug "=> fft audio files"
   [ -d "$audio_files/.fft/" ] && { debug "+ clearing .fft directory"; rm -r "$audio_files/.fft/"; }
