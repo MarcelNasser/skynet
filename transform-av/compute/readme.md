@@ -15,7 +15,7 @@ Three computation methods:
 ## 1: |-d-c-b-a-|
 ## 2: |-a-b-c-d-d-c-b-a-|
 #
-$ bash compute-audio-space/run -s /c/Users/marce/Maths/Data/Audio/Unittest -m default 
+$ bash transform-av/compute/run -s /c/Users/marce/Maths/Data/Audio/Unittest -m default 
 ```
 
 - method 2: `expensive`
@@ -24,7 +24,7 @@ $ bash compute-audio-space/run -s /c/Users/marce/Maths/Data/Audio/Unittest -m de
 #Chop the Sample in N part
 #And compute method #1 above
 #
-$ bash compute-audio-space/run -s /c/Users/marce/Maths/Data/Audio/Unittest -m expensive -l 3
+$ bash transform-av/compute/run -s /c/Users/marce/Maths/Data/Audio/Unittest -m expensive -l 3
 ```
 
 - method 3: `fractal`
@@ -36,5 +36,5 @@ $ bash compute-audio-space/run -s /c/Users/marce/Maths/Data/Audio/Unittest -m ex
 ## 2: |----------------|
 ## 3: |--------|
 #
-$ bash compute-audio-space/run -s /c/Users/marce/Maths/Data/Audio/Unittest -m fractal -l 3
+$ bash transform-av/compute/run -s /c/Users/marce/Maths/Data/Audio/Unittest -m fractal -l 3
 ```

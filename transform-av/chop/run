@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+function usage() {
+    echo -e \
+"Usage:
+  bash transform-av/chop/run -s source_directory -l N
+  chop audio files '.wav' to smaller files N times.
+  Arguments:
+   - s: target directory
+   - l: level of chop
+  "
+}
+
+ROOT_DIR=$(dirname "$0")
+
+#Load source(s)
+source "$ROOT_DIR/../shared/utils.sh"
+source "$(dirname "$0")/../shared/preprocess.sh"
+source "$(dirname "$0")/args.sh"
+
+
+#Overload compute functions
+function pre() {
+  directory=$(realpath "$SOURCE_DIRECTORY")
+  [ ! -d "$directory/.chopped/" ] && mkdir "$directory/.chopped/"
+  wipe-chops
+  debug "+ chopping audio file(s)"
+}
+
+function post() {
+  info "+ alright!"
+}
+
+function compute() {
+  file=$1
+  debug "+ original: $file"
+  for i in $(seq 1 "$FRACTAL_LEVEL"); do
+    chop "$(for ((j=$((i-1)); j<="$i"; j++)); do echo "${file//.wav/$(yy "$j").wav}"; done)" || exit 2
+  done
+}
+
+#Dependencies check
+dependencies
+
+#Loop
+loop '*.wav'

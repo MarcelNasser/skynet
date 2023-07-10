@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+function usage() {
+    echo -e \
+"Usage:
+  bash transform-av/interpolate/run -s source_directory -f N
+  interpolate audio(s) to new duration N times than duration of the original sample.
+  Arguments:
+   - s: target directory
+   - f: multiply factor
+  "
+}
+
+
+ROOT_DIR=$(dirname "$0")
+
+#Load source(s)
+source "$ROOT_DIR/../shared/utils.sh"
+source "$ROOT_DIR/../shared/preprocess.sh"
+
+#Load arguments
+source "$ROOT_DIR/args.sh"
+
+#Overload compute functions
+function pre() {
+  directory=$(realpath "$SOURCE_DIRECTORY")
+  [ ! -d "$directory/.interpolated/" ] && mkdir "$directory/.interpolated/"
+}
+
+function post() {
+  info "+ alright!"
+}
+
+function compute() {
+  file=$1
+  $PYTHON_BIN "$ROOT_DIR/../shared/scripts.py" int \
+        -a "$file" -o ".interpolated/${file//.wav/$(xx "$MULTIPLY_FACTOR").wav}" && ((total++))
+}
+
+
+#Dependencies check
+dependencies
+dependencies_compute
+
+#Main loop
+loop '*.wav'
+
