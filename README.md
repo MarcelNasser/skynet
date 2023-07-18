@@ -1,7 +1,7 @@
-# Ops Scripts
+# Skynet (*Ops-Scripts*)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/docker/buildx/build.yml?branch=master&label=build&logo=github&style=flat-square)](https://github.com/MarcelNasser/ops-script/actions?query=workflow%3Abuild)
 
-The philosophy of the repo is to provide handy scripts no more complex than a `curl` command. Please keep in mind, the scripts are executed on random machines with unsure environments.
+The philosophy of this repo is to provide handy scripts no more complex than a `curl` command. Please keep in mind, the scripts are executed on random machines with unsure environments.
 The scripts must require minimum stuff to compile and run. 
 
 ## Practical example of the philosophy
@@ -22,7 +22,7 @@ script-abc/
 
 Below some details about the scripts structure:
 - *run*: entrypoint main `bash` script handling high-level calls of other scripts and passing arguments
-- *shared*: utilities scripts in `python` to handle data and datastructure
+- *shared*: utility scripts in `python` that handle data and datastructures
 - *external*: external program calls. Those programs must be installed on the machine where the script is executed. 
 
 The main script must run dependencies check and warn if something is missing. For example, below we check python version with a regex and crash if the check fails:
@@ -34,19 +34,20 @@ python3 --version | grep -E "Python 3.([7-9]|1[0-1])\..*" >/dev/null \
 ## Scripts List 
 Here is a non-exhaustive list of scripts implemented in the repos and their main purpose. 
 There are additional readme files into scripts directory. Those readmes explain scripts fine-graded manipulation:
+- **transform-av** => handle audio/videos for scientific computation 
 - **backup-registry** => archive all docker container(s) from a docker registry to google drive
 - **azure-cleanup** => remove azure resource groups
 - **azure-filesystem** => install azurefile and start the service
 - **upload-logs** => push logs files to a data store
 - **browse-github** => scrap GitHub public repos from a specific company
-- **reverse-audio** => reverse an audio sample
-- **compute-audio-space** => compute fourier transform graph of audio files
+
 
 ## Testing
 Tests Suite is written in Bash.
-- test case `dry-run.sh`: run scripts with arguments to zero and check if nothing is done + no error thrown
+- test case `dry-run.sh`: run scripts with arguments to zero and check if nothing is done and no error thrown
 - test case `compute-audio.sh`: check if the computational scripts output files in expected types 
 - test case `browse-github.sh`: check 'docker' has at least 100 public repos on GitHub
+- test case `reverse-audio.sh`: check if a two times reversal of an audio file gives the same audio file.
 - test case `heavy-compute-audio.sh`: run expensive computation and check outputs file are in type and number expected
 - test case `chop-and-interpolate.sh`: check if an original audio can back interpolated 
 
@@ -93,4 +94,10 @@ docker compose run ops-scripts
  |__ audio
 ````
 
-*Note: Do not forget the edit docker-compose file to mount data onto your audios directory from your local machine.*
+*Note: Do not forget the edit docker-compose file your local data into the docker container.*
+````yaml
+    volumes:
+      - type: bind
+        source: $PWD/tests/data/audio  # Replace here with your local data
+        target: /data/audio
+````
