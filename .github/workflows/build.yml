@@ -77,5 +77,6 @@ jobs:
     steps:
       - name: Simulation Tests
         id: test_docker
-        run: |   
+        run: |
+          /src/tests/reverse-audio.sh
           /src/tests/chop-and-interpolate.sh
