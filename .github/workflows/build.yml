@@ -52,7 +52,7 @@ jobs:
         run: |
           /src/tests/run scrap*
 
-  test-av:
+  test-compute-1:
     needs: build
     if: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
@@ -64,9 +64,23 @@ jobs:
       - name: Computation Tests
         id: test_docker
         run: |
-          /src/tests/run av*compute*
+          /src/tests/run *compute.sh
 
-  test-av-2:
+  test-compute-2:
+    needs: build
+    if: ${{ github.ref != 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    container:
+      image: marcelndeffo/tools:ops-scripts-${{ github.sha }}
+      env:
+        VERBOSE: "TRUE"
+    steps:
+      - name: Computation Tests (2)
+        id: test_docker
+        run: |
+          /src/tests/run *compute-2.sh
+
+  test-av:
     needs: build
     if: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
