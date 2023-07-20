@@ -6,8 +6,12 @@ name: Build Bash Scripts Docker
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - .build
+      - .github/workflows/build-*
   pull_request:
     branches: [ main ]
+
 
 jobs:
   build:
