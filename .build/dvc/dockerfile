@@ -1,9 +1,15 @@
-FROM python:3.11-slim
+FROM ubuntu:latest
 
-RUN pip install -U dvc pre-commit
+RUN ( apt update &&  apt install -y git pre-commit jq wget )
 
-RUN apt update
 
-RUN apt install -y jq git
+RUN ( wget https://dvc.org/deb/dvc.list -O /etc/apt/sources.list.d/dvc.list && \
+        wget -qO - https://dvc.org/deb/iterative.asc | gpg --dearmor > packages.iterative.gpg && \
+        install -o root -g root -m 644 packages.iterative.gpg /etc/apt/trusted.gpg.d/ && \
+        rm -f packages.iterative.gpg && \
+        apt update && \
+        apt -y install dvc )
+
+RUN apt autoclean
 
 ENTRYPOINT '/bin/sh'
