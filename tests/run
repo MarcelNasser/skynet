@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+ROOT_DIR="$(dirname "$0")"
+
+function run() {
+  echo "$*" | xargs -I % bash -c "echo; echo === running .. % ===; %; echo ======;"
+}
+
+
+if [ -z "$1" ]; then
+  run "$(find "$ROOT_DIR" -maxdepth 1 \( -name "av-*.sh" -o -name "scrap-*.sh" \))"
+else
+  run "$(find "$ROOT_DIR" -maxdepth 1 -name "$1")"
+fi

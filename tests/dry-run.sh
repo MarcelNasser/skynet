@@ -19,6 +19,8 @@ echo "#5 dry run of 'chop-audio'"
 bash transform-av/chop/run -s tests/data/void -l 10 >/dev/null || error
 echo "#6 dry run of 'interpolate-audio'"
 bash transform-av/interpolate/run -s tests/data/void -l 2 >/dev/null || error
+echo "#7 dry run of 'download-audio'"
+bash download-yt/run -s tests/data/void/void -d tests/data/void >/dev/null || error
 echo "#N check files checksums"
 # shellcheck disable=SC2012
 # final checksum

@@ -38,7 +38,7 @@ jobs:
         push: true
         tags: marcelndeffo/tools:ops-scripts
 
-  test-github:
+  test-scrap:
     needs: build
     if: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
@@ -50,9 +50,9 @@ jobs:
       - name: Run Test Suite
         id: test_docker
         run: |
-          /src/tests/browse-github.sh
+          /src/tests/run scrap*
 
-  test-av-1:
+  test-av:
     needs: build
     if: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
@@ -64,7 +64,7 @@ jobs:
       - name: Computation Tests
         id: test_docker
         run: |
-          /src/tests/heavy-compute-audio.sh
+          /src/tests/run av*compute*
 
   test-av-2:
     needs: build
@@ -75,8 +75,7 @@ jobs:
       env:
         VERBOSE: "TRUE"
     steps:
-      - name: Simulation Tests
+      - name: Transform Tests
         id: test_docker
         run: |
-          /src/tests/reverse-audio.sh
-          /src/tests/chop-and-interpolate.sh
+          /src/tests/run av-transform*

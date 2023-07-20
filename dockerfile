@@ -9,8 +9,8 @@ RUN apt install -y python3-venv
 RUN python3 -m venv /venv
 ENV PATH=/venv/bin:$PATH
 #sources dependencies
-COPY requirements-python.txt .
-RUN pip install -r requirements-python.txt
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 
 ### stage 2: final image
 FROM marcelndeffo/tools:ffmpeg
@@ -32,7 +32,6 @@ ENV PATH=/venv/bin:$PATH
 
 #unittests
 RUN VERBOSE='TRUE' ./tests/dry-run.sh
-RUN VERBOSE='TRUE' ./tests/compute-audio.sh
 
 #set entrypoint to bash
 ENTRYPOINT '/bin/sh'

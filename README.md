@@ -71,7 +71,7 @@ root@d9efa96261a9:/src# browse-github/run -o facebook
 repos 127
 # do some stuff...
 root@d9efa96261a9:/src# tests/dry-run.sh
-root@d9efa96261a9:/src# tests/heavy-compute-audio.sh
+root@d9efa96261a9:/src# tests/av-testcase-compute-2.sh
 #exit
 root@d9efa96261a9:/src# exit
 ````

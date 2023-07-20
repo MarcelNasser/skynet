@@ -50,6 +50,11 @@ function dependencies_compute(){
   $PYTHON_BIN -c "import numpy" >/dev/null 2>/dev/null || { info "missing package 'numpy'."; install-package numpy; }
 }
 
+function dependencies_video(){
+  $PYTHON_BIN --version >/dev/null 2>/dev/null || { error "xxx missing dependency python3\n:  sudo apt install python"; }
+  yt-dlp --version >/dev/null 2>/dev/null  || { info "missing package 'yt-dlp'."; install-package yt-dlp; }
+}
+
 function pre() {
   info "+ into preprocessing"
 }
