@@ -55,6 +55,11 @@ function dependencies_video(){
   yt-dlp --version >/dev/null 2>/dev/null  || { info "missing package 'yt-dlp'."; install-package yt-dlp; }
 }
 
+function dependencies_print(){
+  $PYTHON_BIN --version >/dev/null 2>/dev/null || { echo -e "xxx missing dependency python3\n:  sudo apt install python3"; exit 2; }
+  $PYTHON_BIN -c "import prettytable" >/dev/null 2>/dev/null || { python3 -m pip install prettytable >/dev/null 2>/dev/null; }
+}
+
 function pre() {
   info "+ into preprocessing"
 }
@@ -69,14 +74,14 @@ function compute() {
 
 function loop() {
   pre
-  CWD=$PWD
+  local directory
   directory=$(realpath "$SOURCE_DIRECTORY")
   declare -i total=0
   debug "+ computation loop (do not interrupt)"
-  cd "$directory" || exit 2
-  for file in $(cd "$directory" && find "." -maxdepth 1 -iname "*$1"); do
+  cd "$directory" && \
+   { for file in $(cd "$directory" && find "." -maxdepth 1 -iname "*$1"); do
     [ -n "$file" ] && compute "$file" && ((total++))
-  done || cd "$CWD"
+  done; }
   echo "{\"total\": $total}"
   post
 }

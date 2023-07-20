@@ -44,12 +44,12 @@ There are additional readme files into scripts directory. Those readmes explain 
 
 ## Testing
 Tests Suite is written in Bash.
-- test case `dry-run.sh`: run scripts with arguments to zero and check if nothing is done and no error thrown
-- test case `compute-audio.sh`: check if the computational scripts output files in expected types 
-- test case `browse-github.sh`: check 'docker' has at least 100 public repos on GitHub
-- test case `reverse-audio.sh`: check if a two times reversal of an audio file gives the same audio file.
-- test case `heavy-compute-audio.sh`: run expensive computation and check outputs file are in type and number expected
-- test case `chop-and-interpolate.sh`: check if an original audio can back interpolated 
+- test case `dry-run.sh`: run scripts with arguments to zero and check if no harm
+- test case `scrap-github.sh`: check 'docker' has at least 100 public repos on GitHub
+- test case `scrap-yt.sh`: check if dummy file returns 0 has output
+- test case `av-transform-reverse.sh`: check if a two times reversal of an audio file gives the same audio file.
+- test case `av-testcase-compute*`: run expensive computation of Fourier Transforms and check outputs file are in type and number expected
+- test case `av-transform-interpolate.sh`: check if an audio can be chopped and back interpolated 
 
 ## Build & Automation
 A docker image is built to ease the run of scripts herein on remote machines. 

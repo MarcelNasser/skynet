@@ -11,19 +11,20 @@ function to-lowercase() {
 }
 
 function preprocess(){
-  audio_audios=$(realpath "$SOURCE_DIRECTORY")
+  local directory
+  directory=$(realpath "$SOURCE_DIRECTORY")
   CWD=$PWD
   #Converting MP3/OGG audios to wav
   debug "=> preprocess: checking MP3/OGG"
-  MP3=$(cd "$audio_audios" && find "." -maxdepth 1 -iname '*.mp3' -o -iname '*.ogg' -o -iname '*.m4a')
+  MP3=$(cd "$directory" && find "." -maxdepth 1 -iname '*.mp3' -o -iname '*.ogg' -o -iname '*.m4a')
   [ -n "$MP3" ] && {
     debug "+ converting MP3/OGG"
     for file in ${MP3[*]}; do
-      {  ffmpeg -y -i "$audio_audios/$file" "$audio_audios/${file##*/}.wav" >/dev/null 2>/dev/null  ; }
+      {  ffmpeg -y -i "$directory/$file" "$directory/${file##*/}.wav" >/dev/null 2>/dev/null  ; }
     done || { cd "$CWD" && exit 2; }
   }
   debug "=> preprocess: checking audio audios"
-  cd "$audio_audios" || exit 2
+  cd "$directory" || exit 2
   local list
   list=$(find "." -maxdepth 1 -iname '*.wav')
   [ -z "$list" ] && debug "x no audio audios found" && exit 0
