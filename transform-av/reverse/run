@@ -10,9 +10,11 @@ function usage() {
   "
 }
 
-source "$(dirname "$0")/../shared/utils.sh"
+ROOT_DIR=$(dirname "$0")
 
-source "$(dirname "$0")/../shared/args.sh"
+source "$ROOT_DIR/../shared/utils.sh"
+
+source "$ROOT_DIR/../shared/args.sh"
 
 
 #Dependencies check

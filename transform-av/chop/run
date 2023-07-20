@@ -15,17 +15,17 @@ ROOT_DIR=$(dirname "$0")
 
 #Load source(s)
 source "$ROOT_DIR/../shared/utils.sh"
-source "$(dirname "$0")/../shared/preprocess.sh"
-source "$(dirname "$0")/args.sh"
-
+source "$ROOT_DIR/../shared/preprocess.sh"
+source "$ROOT_DIR/args.sh"
+SOURCE_DIRECTORY=$(realpath "$SOURCE_DIRECTORY")
 
 #Overload compute functions
 function pre() {
-  directory=$(realpath "$SOURCE_DIRECTORY")
-  [ -d "$directory/.chopped/" ] && { debug "-- clearing '.chopped' directory"; rm -r "$directory/.chopped/"; }
-  mkdir "$directory/.chopped/"
-  wipe-chops
-  debug "+ chopping audio file(s)"
+  debug "+ into 'pre'"
+  [ -d "$SOURCE_DIRECTORY/.chopped/" ] && { debug "-- clearing '.chopped' directory"; rm -r "$SOURCE_DIRECTORY/.chopped/"; }
+  mkdir "$SOURCE_DIRECTORY/.chopped/"
+  cd "$directory" && wipe-chops || true
+  debug "+ exit 'pre'"
 }
 
 function post() {

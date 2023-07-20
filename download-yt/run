@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+function usage() {
+    echo -e \
+"Usage:
+  run -s source_urls_txt -d target_directory
+  download youtube videos from urls.
+  Arguments:
+   - s: list of youtube urls txt file
+   - d: target directory
+  "
+}
+
+ROOT_DIR="$(dirname "$0")"
+
+source "$ROOT_DIR/../transform-av/shared/utils.sh"
+source "$ROOT_DIR/shared/args.sh"
+
+
+
+debug "+ dependencies check ..."
+
+#Dependencies check
+dependencies_video
+
+#Check Urls list
+debug "+ urls check ..."
+# shellcheck disable=SC2207
+LIST=$($PYTHON_BIN "$ROOT_DIR/shared/scripts.py" check --urls "$URLS"|sed 's/\r//')
+
+CWD=$PWD
+# shellcheck disable=SC2153
+directory=$(pwd "$DIRECTORY")
+declare -i TOTAL=0
+
+debug "+ download loop (do not interrupt)"
+for url in ${LIST[*]}; do
+  { cd "$directory" && yt-dlp -f "bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best" "$url" >/dev/null && TOTAL=$TOTAL+1 ;} || cd "$CWD"
+done
+info "+ total=$TOTAL"
+
+debug "=== exit"
