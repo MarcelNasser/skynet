@@ -3,7 +3,7 @@
 ROOT_DIR="$(dirname "$0")"
 
 function run() {
-  echo "$*" | xargs -I % bash -c "echo; echo === running .. % ===; %; echo ======;"
+  echo "$*" | xargs -I % bash -c "echo; echo === running .. % ===; % || exit 2; echo ======;"
 }
 
 
