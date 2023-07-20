@@ -9,7 +9,7 @@ RUN apt install -y python3-venv
 RUN python3 -m venv /venv
 ENV PATH=/venv/bin:$PATH
 #sources dependencies
-COPY requirements.txt .
+COPY requirements::::.txt .
 RUN pip install -r requirements.txt
 
 ### stage 2: final image
