@@ -7,10 +7,14 @@ on:
     paths:
       - .build/ffmpeg/**
       - .github/workflows/build-ffmpeg.yml
-
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - {os: "alpine",  tag: "ffmpeg-alpine"}
+          - {os: "ubuntu",  tag: "ffmpeg"}
     permissions:
       contents: write
     steps:
@@ -26,6 +30,6 @@ jobs:
       id: docker_build
       uses: docker/build-push-action@v3
       with:
-        context: "{{defaultContext}}:.build/ffmpeg"
+        context: "{{defaultContext}}:.build/${{ matrix.os }}"
         push: true
-        tags: marcelndeffo/tools:ffmpeg
+        tags: marcelndeffo/tools:${{ matrix.tag }}
