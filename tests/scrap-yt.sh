@@ -7,6 +7,6 @@ source "$ROOT_DIR/transform-av/shared/utils.sh"
 
 # check 'docker' has at least 100 public repos on github
 echo "#0 'scrap-yt' with dummy file"
-bash "$ROOT_DIR"/download-yt/run -s "$ROOT_DIR"/tests/data/void/hello_world.txt -d tests/data/void >/dev/null || error
+bash "$ROOT_DIR"/download-yt/run -s "$ROOT_DIR"/tests/data/void/hello_world.txt -d "$ROOT_DIR"/tests/data/void >/dev/null || error
 echo "#alright!"
 
