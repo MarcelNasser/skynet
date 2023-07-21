@@ -19,7 +19,7 @@ RUN pip install dvc
 
 FROM base
 
-RUN apk add jq git
+RUN apk add jq git bash
 
 #copying python binaries
 COPY --from=pre-build /venv /venv

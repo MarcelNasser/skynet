@@ -10,7 +10,7 @@ RUN pip3 install --no-cache --upgrade pip setuptools
 RUN python --version
 
 # Install ffmpeg
-RUN apk add ffmpeg
+RUN apk add ffmpeg bash
 RUN ffmpeg -version
 
 ENTRYPOINT '/bin/sh'
