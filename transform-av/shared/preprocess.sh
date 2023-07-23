@@ -52,8 +52,8 @@ function chop(){
 }
 
 function wipe-chops(){
-  debug "-- clearing old '.y.wav'"
-  old_chopped=$(find "." -maxdepth 1 -iname '*.y.wav')
+  debug "-- clearing old $EXT.wav"
+  old_chopped=$(find "." -maxdepth 1 -iname "*$EXT.wav")
   [ -z "$old_chopped" ] && return
   local filename
   while read -r filename; do
@@ -62,7 +62,7 @@ function wipe-chops(){
 }
 
 function yy() {
-  for ((i=1; i<=$1; i++)); do echo -n '.y'; done
+  for ((i=1; i<=$1; i++)); do echo -n "$EXT"; done
 }
 
 function xx() {
