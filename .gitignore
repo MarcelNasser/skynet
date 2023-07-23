@@ -3,6 +3,7 @@ venv/
 .fft/
 .reversed/
 .palindromic/
+.interpolated/
 .orig/
 *.y.wav
 example_file.mp3.wav

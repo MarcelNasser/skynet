@@ -9,7 +9,7 @@ function debug() {
 }
 
 function error() {
-  echo "x failed" >&1 && exit 2;
+  echo "x failed <reason=${1:-'?'}>" >&1 && exit 2;
 }
 
 function ffmpeg-arch(){

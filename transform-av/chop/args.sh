@@ -16,7 +16,7 @@ done
 FRACTAL_LEVEL=${FRACTAL_LEVEL:-1}
 VERBOSE=${VERBOSE:-true}
 MOVE_CHOPS=${MOVE_CHOPS:-yes}
-EXT=${EXT:-.y}
+EXT=${EXT:-".y"}
 
 ! [ -n "$SOURCE_DIRECTORY" -a -d "$SOURCE_DIRECTORY" ] && echo "*Directory not found*" && usage && exit 2
 

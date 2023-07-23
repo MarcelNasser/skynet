@@ -1,6 +1,6 @@
 function replace() {
-    [ ! -f "$1" ] && return 0
-    [ "$1" != "$2" ] && debug "-- editing file $1" && mv "$1" "$2"
+    [ ! -f "$1" ] && return 0 || true
+    [ "$1" != "$2" ] && debug "-- editing file $1" && mv "$1" "$2" || true
 }
 
 function to-lowercase() {
@@ -36,7 +36,8 @@ function preprocess(){
   cd "$CWD" || exit 2
   #chop audio file to check fractal conservation (method==expensive)
   [[ "$COMPUTE_METHOD" == "expensive" ]] && {
-    bash "$ROOT_DIR/../chop/run" -s "$SOURCE_DIRECTORY" -l "$FRACTAL_LEVEL" -m "no" 2>/dev/null >/dev/null || exit 2
+    debug "=> preprocess: chopping loop"
+    bash "$ROOT_DIR/../chop/run" -s "$SOURCE_DIRECTORY" -l "$FRACTAL_LEVEL" -m "no"  >/dev/null || error "chopping of expensive crashed"
   }
 }
 
@@ -52,8 +53,9 @@ function chop(){
 }
 
 function wipe-chops(){
-  debug "-- clearing old $EXT.wav"
-  old_chopped=$(find "." -maxdepth 1 -iname "*$EXT.wav")
+  ext=${EXT:-.y}
+  debug "-- clearing old $ext.wav"
+  old_chopped=$(find "." -maxdepth 1 -iname "*$ext.wav")
   [ -z "$old_chopped" ] && return
   local filename
   while read -r filename; do
@@ -62,7 +64,8 @@ function wipe-chops(){
 }
 
 function yy() {
-  for ((i=1; i<=$1; i++)); do echo -n "$EXT"; done
+  ext=${EXT:-.y}
+  for ((i=1; i<=$1; i++)); do echo -n "$ext"; done
 }
 
 function xx() {
@@ -72,11 +75,10 @@ function xx() {
 # check if all files in a directory are of a certain type
 function check_content(){
   LIST=$(find "$1" -maxdepth 1 -type f)
-  [ -z "$LIST" ] && echo "error: empty folder '$1'" && error
+  [ -z "$LIST" ] && error "empty folder '$1'"
   while read -r file; do
     if ! echo "${@:2}" | grep -q "$(file -b --mime-type "$file")"; then
-      echo "error:$file is not of type $2"
-      error
+      error "$file is not of type $2"
     fi
   done <<< "$LIST"
 }
