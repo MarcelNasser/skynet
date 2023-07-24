@@ -8,6 +8,8 @@ function usage() {
   Arguments:
    - s: target directory
    - l: level of chop
+   - m: move chops [yes/no]
+   - e: extension [.y]
   "
 }
 
@@ -29,9 +31,9 @@ function pre() {
 }
 
 function post() {
-  old_chops=$(find "$SOURCE_DIRECTORY" -iname '*.y.wav')
+  old_chops=$(find "$SOURCE_DIRECTORY" -iname "*$EXT.wav")
   if [ -n "${old_chops[*]}" ]; then
-    [ "$MOVE_CHOPS" == "yes" -a "$FRACTAL_LEVEL" -gt 0 ] && mv "$SOURCE_DIRECTORY"/*.y.wav "$SOURCE_DIRECTORY/.chopped/"|| true
+    [ "$MOVE_CHOPS" == "yes" -a "$FRACTAL_LEVEL" -gt 0 ] && mv "$SOURCE_DIRECTORY"/*$EXT.wav "$SOURCE_DIRECTORY/.chopped/"|| true
   fi
   info "+ alright!"
 }

@@ -36,7 +36,7 @@ function post() {
 function compute() {
   file=$1
   $PYTHON_BIN "$ROOT_DIR/shared/scripts.py" int -a "$file" \
-      -o ".interpolated/${file//.wav/$(xx "$((MULTIPLY_FACTOR/2))").wav}" -m "$INT_METHOD"\
+      -o ".interpolated/${file//.wav/$(xx "$((MULTIPLY_FACTOR/2))").wav}" -m "$COMPUTE_METHOD"\
       -f "$MULTIPLY_FACTOR" || error "Cannot interpolate '$file'"
 }
 
@@ -45,6 +45,13 @@ function compute() {
 dependencies
 dependencies_compute
 
-#Main loop
-loop '*.wav'
+#Python loop
+if [[ "$COMPUTE_METHOD" == @("linear"|"zeros") ]] ; then loop '*.wav'; fi
 
+if [[ "$COMPUTE_METHOD" == "palindromic" ]] ; then
+  pre
+  directory=$(realpath "$SOURCE_DIRECTORY")
+  bash "$ROOT_DIR"/chop/run  -s "$directory" -l "$MULTIPLY_FACTOR" -e ".x" || error
+  bash "$ROOT_DIR"/reverse/run -s "$directory"/.chopped || error
+  mv "$directory"/.chopped/.palindromic/* "$directory"/.interpolated
+fi

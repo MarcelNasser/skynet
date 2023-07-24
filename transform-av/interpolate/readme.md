@@ -23,3 +23,10 @@ $ bash transform-av/interpolate/run -s source_directory -l N
 ## l) augmentation factor
 $ bash transform-av/interpolate/run -s /c/Users/marce/Maths/Data/Audio/Unittest -l 2 -m "linear"
 ```
+
+**Example**
+```bash
+## s) source directory
+## l) chopping factor
+$ bash transform-av/interpolate/run -s /c/Users/marce/Maths/Data/Audio/Unittest -l 2 -m "palindromic"
+```
