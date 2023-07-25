@@ -1,5 +1,5 @@
 # Skynet (*Ops-Scripts*)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/docker/buildx/build.yml?branch=master&label=build&logo=github&style=flat-square)](https://github.com/MarcelNasser/ops-script/actions?query=workflow%3Abuild)
+![workflow](https://github.com/MarcelNasser/skynet/actions/workflows/build.yml/badge.svg)
 
 The philosophy of this repo is to provide handy scripts no more complex than a `curl` command. Please keep in mind, the scripts are executed on random machines with unsure environments.
 The scripts must require minimum stuff to compile and run. 
