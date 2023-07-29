@@ -1,4 +1,4 @@
-## backup docker registry
+## browse github
 - user story :<br/>
 *I want to browse an organization github and extract general information on public repos (repos, number of stars, language).*
 - requirements : 
