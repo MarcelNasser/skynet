@@ -1,0 +1,23 @@
+FROM ubuntu as base
+
+ENV METRICS_EXPORTER_VERSION=1.6.1
+
+WORKDIR /build
+
+RUN apt update && apt install -y wget
+
+RUN (wget https://github.com/prometheus/node_exporter/releases/download/v1.6.1/node_exporter-$METRICS_EXPORTER_VERSION.linux-amd64.tar.gz && \
+    tar xvfz node_exporter-$METRICS_EXPORTER_VERSION.linux-amd64.tar.gz && \
+    rm node_exporter-$METRICS_EXPORTER_VERSION.linux-amd64.tar.gz && \
+    mv node_exporter-$METRICS_EXPORTER_VERSION.linux-amd64 metrics )
+
+FROM ubuntu
+
+EXPOSE 9100
+
+COPY --from=base /build/metrics /run
+
+CMD  /run/metrics/node_exporter
+
+
+
