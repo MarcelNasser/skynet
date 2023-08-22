@@ -15,9 +15,9 @@ FROM ubuntu
 
 EXPOSE 9100
 
-COPY --from=base /build/metrics /run
+COPY --from=base /build/metrics/node_exporter /run/metrics
 
-CMD  /run/metrics/node_exporter
+CMD  /run/metrics
 
 
 
