@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - {os: "alpine",  tag: "alpine-metrics"}
+          - {os: "alpine",  tag: "metrics"}
           - {os: "ubuntu",  tag: "ubuntu-metrics"}
     permissions:
       contents: write
