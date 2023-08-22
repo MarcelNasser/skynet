@@ -15,9 +15,13 @@ FROM ubuntu
 
 EXPOSE 9100
 
-COPY --from=base /build/metrics/node_exporter /run/metrics
+RUN apt update
 
-CMD  /run/metrics
+RUN  apt install -y systemd
+
+COPY --from=base /build/metrics/node_exporter /usr/bin/metrics
+
+CMD metrics
 
 
 

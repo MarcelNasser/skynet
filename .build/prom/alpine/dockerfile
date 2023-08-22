@@ -15,9 +15,13 @@ FROM alpine:3.18
 
 EXPOSE 9100
 
-COPY --from=base /build/metrics/node_exporter /run/metrics
+RUN apk add openrc
 
-CMD  /run/metrics
+COPY --from=base /build/metrics/node_exporter /usr/bin/metrics
+
+CMD metrics
+
+
 
 
 
