@@ -1,4 +1,4 @@
-FROM alpine as base
+FROM alpine:3.18 as base
 
 ENV METRICS_EXPORTER_VERSION=1.6.1
 
@@ -11,7 +11,7 @@ RUN (wget https://github.com/prometheus/node_exporter/releases/download/v1.6.1/n
     rm node_exporter-$METRICS_EXPORTER_VERSION.linux-amd64.tar.gz && \
     mv node_exporter-$METRICS_EXPORTER_VERSION.linux-amd64 metrics )
 
-FROM alpine
+FROM alpine:3.18
 
 EXPOSE 9100
 
