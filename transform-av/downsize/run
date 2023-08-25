@@ -11,7 +11,7 @@ function usage() {
 }
 
 source "$(dirname "$0")/../shared/utils.sh"
-
+source "$(dirname "$0")/../shared/preprocess.sh"
 source "$(dirname "$0")/../shared/args.sh"
 
 
@@ -37,6 +37,8 @@ function decrease(){
   fi
 }
 
+
+
 function compute() {
   file=$1
   read -r iw ih <<< "$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s="\ ":p=0 "$file")"
@@ -47,4 +49,5 @@ function compute() {
 }
 
 #Main Loop
+preprocess
 loop '.mp4'
