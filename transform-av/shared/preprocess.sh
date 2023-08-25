@@ -8,7 +8,9 @@ function to-lowercase() {
   clean_name="${lowercase_name//[\ \'\(\)]/_}"
   debug "++ check naming: current=$1, expected=$clean_name"
   replace "$1" "$clean_name" >/dev/null
+  echo "$clean_name"
 }
+
 
 function preprocess(){
   local directory
@@ -26,8 +28,8 @@ function preprocess(){
   debug "=> preprocess: checking audio audios"
   cd "$directory" || exit 2
   local list
-  list=$(find "." -maxdepth 1 -iname '*.wav')
-  [ -z "$list" ] && debug "x no audio audios found" && exit 0
+  list=$(find "." -maxdepth 1 -iname '*.wav' -o -iname '*.mp4')
+  [ -z "$list" ] && info "x no av files found" && exit 0
   debug "+ audio file(s) found"
   debug "+ checking special characters"
   while read -r filename; do
