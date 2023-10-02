@@ -1,7 +1,7 @@
 FROM python:3.10-alpine as base
 
 ENV DVC_VERSION="3.7.0"
-ENV LIBGIT2_VERSION="1.6.4"
+ENV LIBGIT2_VERSION="1.7.1"
 
 RUN apk update
 

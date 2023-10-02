@@ -1,16 +1,18 @@
-## browse github
+## Scrap GitHub
 - user story :<br/>
-*I want to browse an organization github and extract general information on public repos (repos, number of stars, language).*
+
+*I want to browse an organization GitHub and extract general information on public repos (repos, number of stars, language).*
+
 - requirements : 
 	- python3
 	- bash
 
 **set the auth token**
-Export github token in the environment
+
+Export GitHub token in the environment.
 ```bash
 export GITHUB_USERNAME=your_username
 export GITHUB_TOKEN=your_private_token
-
 ```
 
 **run the script**
@@ -19,7 +21,8 @@ bash browse-github/run -o your_organization_name
 ```
 
 **example(s) output**
-In the example below, the organization is missing or have private repos only. Github server returns a clear explanation (404). The script catches the explanation and exits cleanly.
+
+In the example below, the organization is missing or have private repos only. GitHub server returns a clear explanation (404). The script catches the explanation and exits cleanly.
 ````bash
 $ bash browse-github/run -o meta
 + dependencies checks
@@ -30,7 +33,7 @@ ERROR:
 INFO: no repos found
 ````
 In the example below, the organization is there and do have public repos. The script returns all repos ranked by popularity and give general information (main language and url).
-The table gives an overview of an organization activity and popularity on Github.
+The table gives an overview of an organization activity and popularity on GitHub.
 ````bash
 $ bash browse-github/run -o kubernetes
 + dependencies checks
@@ -121,9 +124,11 @@ INFO:
 +------------------------------+-------+------------------+------------------------------------------------------------+
 
 ````
+---
 
 **Known Issues of Script**
-- Rate limit: we observe after dozens of executions Github returns a 403 to the script requests. We suspect it to be a rate limitation or a bot security that degrades the performance of the script.
+
+- Rate limit: we observe after dozens of executions GitHub returns a 403 to the script requests. We suspect it to be a rate limitation or a bot security that degrades the performance of the script.
 
 
 
