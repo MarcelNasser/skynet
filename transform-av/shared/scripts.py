@@ -1,9 +1,8 @@
 import argparse
-import math
 import os
 import pathlib
 import sys
-from logging import getLogger, basicConfig, INFO, DEBUG, ERROR
+from logging import getLogger, basicConfig, DEBUG, ERROR
 import warnings
 import matplotlib
 import matplotlib.pyplot as plot
