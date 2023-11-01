@@ -5,7 +5,7 @@
 source "$(dirname "$0")/../transform-av/shared/utils.sh"
 source "$(dirname "$0")/../transform-av/shared/preprocess.sh"
 
-ROOT_DIR=$(realpath "$(dirname "$0")"/..)
+ROOT_DIR=$(realpath "$(dirname "$0")/..")
 
 echo "#1 'compute-audio-space' single audio"
 bash "$ROOT_DIR"/transform-av/compute/run -s "$ROOT_DIR"/tests/data/audio/single-file -m reverse || error

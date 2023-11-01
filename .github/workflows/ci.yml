@@ -23,10 +23,10 @@ jobs:
       env:
         VERBOSE: "TRUE"
     steps:
+      - uses: actions/checkout@v3
       - name: Run Test Suite
         id: test_docker
-        run: |
-          /src/tests/run scrap*
+        run: tests/run scrap*
 
   test-compute-1:
     runs-on: ubuntu-latest
@@ -35,10 +35,10 @@ jobs:
       env:
         VERBOSE: "TRUE"
     steps:
+      - uses: actions/checkout@v3
       - name: Computation Tests
         id: test_docker
-        run: |
-          /src/tests/run *compute.sh
+        run: tests/run *compute.sh
 
   test-compute-2:
     runs-on: ubuntu-latest
@@ -47,10 +47,10 @@ jobs:
       env:
         VERBOSE: "TRUE"
     steps:
+      - uses: actions/checkout@v3
       - name: Computation Tests (2)
         id: test_docker
-        run: |
-          /src/tests/run *compute-2.sh
+        run: tests/run *compute-2.sh
 
   test-av:
     runs-on: ubuntu-latest
@@ -59,7 +59,7 @@ jobs:
       env:
         VERBOSE: "TRUE"
     steps:
+      - uses: actions/checkout@v3
       - name: Transform Tests
         id: test_docker
-        run: |
-          /src/tests/run av-transform*
+        run: tests/run av-transform*
