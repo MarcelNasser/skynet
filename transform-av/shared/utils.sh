@@ -102,7 +102,7 @@ function loop-compute-p() {
   local records
   records="$audio_files/.fft/$COMPUTE_METHOD"
   [ -d "$records" ] && { debug "+ clearing .fft directory"; rm -r "$records"; }
-  mkdir "$records"
+  mkdir -p "$records"
   declare -i total=0
   local list
   list=$(cd "$audio_files" && find "." -maxdepth 1 -iname '*.wav')
@@ -134,7 +134,7 @@ function loop-compute-f() {
   local records
   records="$audio_files/.fft/fractal"
   [ -d "$records" ] && { debug "-- clearing .fft directory"; rm -r "$records"; }
-  mkdir "$records"
+  mkdir -p "$records"
   declare -i total=0
   local list
   list=$(cd "$audio_files" && find "." -maxdepth 1 -iname '*.wav' -a ! -iname '*.y.wav'  )
