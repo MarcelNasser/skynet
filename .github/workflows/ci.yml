@@ -26,7 +26,9 @@ jobs:
       - uses: actions/checkout@v3
       - name: Run Test Suite
         id: test_docker
-        run: tests/run scrap*
+        run: |
+          chmod +x tests/run transform-av/**/run
+          tests/run scrap*
 
   test-compute-1:
     runs-on: ubuntu-latest
@@ -38,7 +40,9 @@ jobs:
       - uses: actions/checkout@v3
       - name: Computation Tests
         id: test_docker
-        run: tests/run *compute.sh
+        run: |
+          chmod +x tests/run transform-av/**/run
+          tests/run *compute.sh
 
   test-compute-2:
     runs-on: ubuntu-latest
@@ -50,7 +54,9 @@ jobs:
       - uses: actions/checkout@v3
       - name: Computation Tests (2)
         id: test_docker
-        run: tests/run *compute-2.sh
+        run: |
+          chmod +x tests/run transform-av/**/run
+          tests/run *compute-2.sh
 
   test-av:
     runs-on: ubuntu-latest
@@ -62,4 +68,6 @@ jobs:
       - uses: actions/checkout@v3
       - name: Transform Tests
         id: test_docker
-        run: tests/run av-transform*
+        run: |
+          chmod +x tests/run transform-av/**/run
+          tests/run av-transform*
