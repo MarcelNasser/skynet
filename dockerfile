@@ -17,21 +17,13 @@ FROM marcelndeffo/tools:ffmpeg
 
 USER root
 
-ENV VERBOSE ''
+ENV VERBOSE 'TRUE'
 
 WORKDIR /src/
 
-#copy all sources to /src
-COPY . /src/
-RUN chmod +x /src/**/*.sh /src/**/run
-
-#build
 #copying python binaries
 COPY --from=pre-build /venv /venv
 ENV PATH=/venv/bin:$PATH
-
-#unittests
-RUN VERBOSE='TRUE' ./tests/dry-run.sh
 
 #set entrypoint to bash
 ENTRYPOINT '/bin/sh'

@@ -99,8 +99,10 @@ function loop-compute-p() {
   fi
   #Compute FFT of original / reverted / palindromic audio file
   debug "=> fft audio files"
-  [ -d "$audio_files/.fft/" ] && { debug "+ clearing .fft directory"; rm -r "$audio_files/.fft/"; }
-  mkdir "$audio_files/.fft/"
+  local records
+  records="$audio_files/.fft/$COMPUTE_METHOD"
+  [ -d "$records" ] && { debug "+ clearing .fft directory"; rm -r "$records"; }
+  mkdir -p "$records"
   declare -i total=0
   local list
   list=$(cd "$audio_files" && find "." -maxdepth 1 -iname '*.wav')
@@ -111,10 +113,10 @@ function loop-compute-p() {
       if [[ "$COMPUTE_METHOD" == @("expensive"|"reverse") ]]; then
         $PYTHON_BIN "$root_dir/../shared/scripts.py" fft \
         -a "$audio_files/$filename" "$audio_files/.reversed/${filename,,}" "$audio_files/.palindromic/${filename,,}"  \
-        -o "$audio_files/.fft/${filename,,}.png" && ((total++))
+        -o "$records/${filename,,}.png" && ((total++))
       else
         $PYTHON_BIN "$root_dir/../shared/scripts.py" fft \
-        -a "$audio_files/$filename" -o "$audio_files/.fft/${filename,,}.png" && ((total++))
+        -a "$audio_files/$filename" -o "$records/${filename,,}.png" && ((total++))
       fi
   done <<< "$list"
   echo "{\"total\": $total}"
@@ -129,8 +131,10 @@ function loop-compute-f() {
   local root_dir
   root_dir=$(realpath "$(dirname "$0")")
   debug "=> fft audio files"
-  [ -d "$audio_files/.fft/" ] && { debug "-- clearing .fft directory"; rm -r "$audio_files/.fft/"; }
-  mkdir "$audio_files/.fft/"
+  local records
+  records="$audio_files/.fft/fractal"
+  [ -d "$records" ] && { debug "-- clearing .fft directory"; rm -r "$records"; }
+  mkdir -p "$records"
   declare -i total=0
   local list
   list=$(cd "$audio_files" && find "." -maxdepth 1 -iname '*.wav' -a ! -iname '*.y.wav'  )
@@ -142,7 +146,7 @@ function loop-compute-f() {
       done
       readarray files <<< "$(for ((j="$FRACTAL_LEVEL"; j>=0; j--)); do echo "$audio_files/${filename//.wav/$(yy "$j").wav}"; done)"
       debug "++ file #$total: $filename"
-      $PYTHON_BIN "$root_dir/../shared/scripts.py" fft -a "${files[@]/$'\n'}"  -o "$audio_files/.fft/${filename,,}.png" && ((total++))
+      $PYTHON_BIN "$root_dir/../shared/scripts.py" fft -a "${files[@]/$'\n'}"  -o "$records/${filename,,}.png" && ((total++))
       cd "$audio_files" && wipe-chops || true
   done <<< "$list"
   echo "{\"total\": $total}"
