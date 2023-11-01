@@ -7,7 +7,14 @@ Compute Fourier Transform of:
 
 Three computation methods:
 
-- method 1: `default`
+- method 0: `default`
+```bash
+#
+#Compute FFt of audio file
+$ bash transform-av/compute/run -s /c/Users/marce/Maths/Data/Audio/Unittest -m default 
+```
+
+- method 1: `reverse`
 ```bash
 #
 #Compute FFt of audio file / reversed / palindromic
@@ -15,7 +22,7 @@ Three computation methods:
 ## 1: |-d-c-b-a-|
 ## 2: |-a-b-c-d-d-c-b-a-|
 #
-$ bash transform-av/compute/run -s /c/Users/marce/Maths/Data/Audio/Unittest -m default 
+$ bash transform-av/compute/run -s /c/Users/marce/Maths/Data/Audio/Unittest -m reverse 
 ```
 
 - method 2: `expensive`

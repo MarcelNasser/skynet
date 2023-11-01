@@ -12,12 +12,12 @@ bash "$ROOT_DIR"/transform-av/compute/run -s "$ROOT_DIR"/tests/data/audio/single
 check_content "$ROOT_DIR"/tests/data/audio/single-file/.fft 'image/png'
 check_content "$ROOT_DIR"/tests/data/audio/single-file/.palindromic 'audio/x-wav'
 check_content "$ROOT_DIR"/tests/data/audio/single-file/.reversed 'audio/x-wav'
-[ "$(find "$ROOT_DIR/tests/data/audio/single-file/.fft" -maxdepth 1 -iname '*.png'| wc -l)" -ne 2 ] && echo "number of fft [expensive] <> 2" && error
+[ "$(find "$ROOT_DIR/tests/data/audio/single-file/.fft/expensive" -maxdepth 1 -iname '*.png'| wc -l)" -ne 2 ] && echo "number of fft [expensive] <> 2" && error
 
 echo "#1 'compute-audio-space' single audio [fractal]"
 bash "$ROOT_DIR"/transform-av/compute/run -s "$ROOT_DIR"/tests/data/audio/single-file -m fractal -l 1 >/dev/null || error "compute crash"
 check_content "$ROOT_DIR"/tests/data/audio/single-file/.fft 'image/png'
-[ "$(find "$ROOT_DIR/tests/data/audio/single-file/.fft" -maxdepth 1 -iname '*.png'| wc -l)" -ne 1 ] && echo "number of fft [fractal] <> 1" && error
+[ "$(find "$ROOT_DIR/tests/data/audio/single-file/.fft/fractal" -maxdepth 1 -iname '*.png'| wc -l)" -ne 1 ] && echo "number of fft [fractal] <> 1" && error
 
 echo "#2 'compute-audio-space' multiple audio(s)"
 bash "$ROOT_DIR"/transform-av/compute/run -s "$ROOT_DIR"/tests/data/audio/multiple-files -m reverse >/dev/null || error "compute crash"
