@@ -12,10 +12,10 @@
 
 
 
-*Test cases (must pass the [ci](../.github/workflows/ci.yml)):*
+*Test cases list (must pass the [ci](../.github/workflows/ci.yml)):*
 
 
-| testcase              | purpose                                                                                                      | doc                                                                                      |
+| testcase              | purpose                                                                                                      | code                                                                                      |
 |-----------------------|--------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
 | dry-run               | run with no entry transform scripts <br> and check if no harm done.                                          | [here](../tests/dry-run.sh)                                                              |
 | transform-reverse     | reverse two times audio sample <br> and checksum if is identical to original sample.                         | [here](../tests/av-transform-reverse.sh)                                                 |
