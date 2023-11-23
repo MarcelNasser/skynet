@@ -1,6 +1,15 @@
 ## Transform Audio or Video File
 
-*Transforms list:*
+
+### Overview
+
+This operator transforms sequentially audio/video files in a source directory.
+The transform results are written into the source directory, whether into a subdirectory (`.fft`, `.interpolate`) or if collision, the original files are migrated into a backup directory (`.orig`).
+````bash
+$ bash transform-av/[command]/run -s source_directory
+````
+
+The transform commands are listed below:
 
 | transform   | purpose                        | doc                           |
 |-------------|--------------------------------|-------------------------------|
@@ -11,8 +20,17 @@
 | reverse     | play in reverse an audio file  | [here](reverse/readme.md)     |
 
 
+### Testing
 
-*Test cases list (must pass the [ci](../.github/workflows/ci.yml)):*
+Pay attention to the testcases passing, before pushing the code to the `main` branch. The testcases are a safety to net to ensure basic statement of the transforrm command won't break. 
+Please keep in mind those testcases don't cover all scenarios. a-k-a "*it is not because the testcases passed that the overall statement is not broken.*" <br><br>
+The logic behind those testcases is to check degraded statement. If the degraded statement is false, then the general statement is false.
+If the degraded statement is true, we cannot say the general statement is true. 
+See example: <br>
+- general statetement: *"The brother of Paul is an hardworking person."*
+- testcase statement: *"Paul has a brother."*
+
+Testcases must pass the [ci](../.github/workflows/ci.yml):
 
 
 | testcase              | purpose                                                                                                      | code                                                                                      |
