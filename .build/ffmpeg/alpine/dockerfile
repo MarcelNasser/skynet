@@ -5,7 +5,9 @@ RUN apk update
 # Install python/pip
 ENV PYTHONUNBUFFERED=1
 RUN apk add --update --no-cache python3 py-pip
-RUN python3 --version
+RUN ln -sf /usr/bin/python3 /usr/bin/python
+
+RUN python --version
 
 # Install ffmpeg
 RUN apk add ffmpeg bash

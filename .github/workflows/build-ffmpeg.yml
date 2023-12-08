@@ -15,6 +15,7 @@ jobs:
         include:
           - {os: "alpine",  tag: "ffmpeg-alpine"}
           - {os: "ubuntu",  tag: "ffmpeg"}
+          - { os: "ubuntu-py310",  tag: "ffmpeg-python3.10" }
     permissions:
       contents: write
     steps:

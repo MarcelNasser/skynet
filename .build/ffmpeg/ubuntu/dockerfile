@@ -2,10 +2,15 @@ FROM jrottenberg/ffmpeg:6.0-ubuntu
 
 RUN apt update
 
-#install python3 (standard version is 3.8)
-#3.9 available but installed under the binary name `python3.9` (disrupting dowstream scripts)
-#3.10 require a lot of stuff for proper install
-RUN apt install -y python3
+#install python3.10 and pip
+RUN apt remove -y python3 python
+RUN apt install -y  software-properties-common && add-apt-repository ppa:deadsnakes/ppa && apt update
+RUN  apt install -y python3.10 python3.10-distutils binutils python3.10-dev
+RUN ln -sf /usr/bin/python3.10 /usr/bin/python
+
+# install pip
+ADD https://bootstrap.pypa.io/get-pip.py get-pip.py
+RUN python get-pip.py
 
 RUN apt clean
 
