@@ -12,9 +12,6 @@ RUN ln -sf /usr/bin/python3 /usr/bin/python
 
 RUN python --version
 
-# ci python utilitary
-RUN pip install poetry
-
 # Install ffmpeg
 RUN apk add ffmpeg bash
 RUN ffmpeg -version
