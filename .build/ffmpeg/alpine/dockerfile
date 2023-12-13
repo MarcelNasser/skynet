@@ -2,7 +2,10 @@ FROM alpine:latest
 
 RUN apk update
 
-# Install python/pip
+# ci utilitaries
+RUN apk add --update --no-cache make jq
+
+# Install python/pip and utilitaries
 ENV PYTHONUNBUFFERED=1
 RUN apk add --update --no-cache python3 py-pip
 RUN ln -sf /usr/bin/python3 /usr/bin/python
