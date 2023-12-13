@@ -2,6 +2,9 @@ FROM jrottenberg/ffmpeg:6.0-ubuntu
 
 RUN apt update
 
+# utilitary tools
+RUN apt install -y make jq
+
 #install python3.10 and pip
 RUN apt remove -y python3 python
 RUN apt install -y  software-properties-common && add-apt-repository ppa:deadsnakes/ppa && apt update
@@ -11,6 +14,12 @@ RUN ln -sf /usr/bin/python3.10 /usr/bin/python
 # install pip
 ADD https://bootstrap.pypa.io/get-pip.py get-pip.py
 RUN python get-pip.py
+
+# ci tool
+RUN pip install poetry
+
+# required by opencv: to manage devices
+RUN apt install -y libgl1-mesa-glx
 
 RUN apt clean
 
