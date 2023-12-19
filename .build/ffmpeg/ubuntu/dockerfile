@@ -5,11 +5,11 @@ RUN apt update
 # utilitary tools
 RUN apt install -y make jq
 
-#install python3.10 and pip
+#install python3.11 and pip
 RUN apt remove -y python3 python
 RUN apt install -y  software-properties-common && add-apt-repository ppa:deadsnakes/ppa && apt update
-RUN  apt install -y python3.10 python3.10-distutils binutils python3.10-dev
-RUN ln -sf /usr/bin/python3.10 /usr/bin/python
+RUN  apt install -y python3.11 python3.11-distutils binutils python3.11-dev
+RUN ln -sf /usr/bin/python3.11 /usr/bin/python
 
 # install pip
 ADD https://bootstrap.pypa.io/get-pip.py get-pip.py
@@ -21,6 +21,6 @@ RUN pip install poetry
 # required by opencv: to manage devices
 RUN apt install -y libgl1-mesa-glx
 
-RUN apt clean
+RUN apt autoclean
 
 ENTRYPOINT '/bin/sh'
