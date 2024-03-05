@@ -83,8 +83,6 @@ def _list_repos(org):
         logger.debug("no repos found")
         return []
     logger.debug(f"public repos total = {len(repos)}")
-    output = PrettyTable()
-    output.field_names = ["Name", "Stars", "Language", "url"]
     repos_table = []
     for r in repos:
         repos_table.append([r['name'], int(r['stargazers_count']), r['language'], r['html_url']])
@@ -109,7 +107,7 @@ def print_repos(opt):
     logger.info("\n" + str(output))
     if opt.output:
         with open(opt.output, 'w') as f:
-            f.write(output)
+            f.write(str(output))
 
 
 if __name__ == "__main__":

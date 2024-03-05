@@ -54,15 +54,15 @@ Tests Suite is written in Bash.
 ## Build & Automation
 A docker image is built to ease the run of scripts herein on remote machines. 
 
-The docker image is released on docker-hub: **marcelndeffo/tools:ops-scripts**
+The docker image is released on docker-hub: **marcelndeffo/tools:skynet**
 
 - pull public docker image (no login)
 ````bash
-docker pull marcelndeffo/tools:ops-scripts
+docker pull marcelndeffo/tools:skynet
 ````
 - open a bash terminal in the container
 ````bash
-docker run -t -i marcelndeffo/tools:ops-scripts bash
+docker run -t -i marcelndeffo/tools:skynet bash
 ````
 - run the script into docker
 ````bash

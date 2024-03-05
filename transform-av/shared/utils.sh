@@ -51,13 +51,13 @@ function dependencies_compute(){
 }
 
 function dependencies_video(){
-  $PYTHON_BIN --version >/dev/null 2>/dev/null || { error "xxx missing dependency python3\n:  sudo apt install python"; }
+  $PYTHON_BIN --version >/dev/null 2>/dev/null || { error "xxx missing dependency $PYTHON_BIN\n:  sudo apt install python"; }
   yt-dlp --version >/dev/null 2>/dev/null  || { info "missing package 'yt-dlp'."; install-package yt-dlp; }
 }
 
 function dependencies_print(){
-  $PYTHON_BIN --version >/dev/null 2>/dev/null || { echo -e "xxx missing dependency python3\n:  sudo apt install python3"; exit 2; }
-  $PYTHON_BIN -c "import prettytable" >/dev/null 2>/dev/null || { python3 -m pip install prettytable >/dev/null 2>/dev/null; }
+  $PYTHON_BIN --version >/dev/null 2>/dev/null || { echo -e "xxx missing dependency $PYTHON_BIN\n:  sudo apt install $PYTHON_BIN"; exit 2; }
+  $PYTHON_BIN -c "import prettytable" >/dev/null 2>/dev/null || { $PYTHON_BIN -m pip install prettytable >/dev/null 2>/dev/null; }
 }
 
 function pre() {
@@ -85,7 +85,6 @@ function loop() {
   echo "{\"total\": $total}"
   post
 }
-
 
 #Compute Palindromic FFT
 function loop-compute-p() {
