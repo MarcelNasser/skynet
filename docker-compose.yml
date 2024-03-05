@@ -4,7 +4,7 @@ services:
 
   ops-scripts:
     container_name: ops-scripts
-    image: marcelndeffo/tools:ops-scripts-local
+    image: marcelndeffo/tools:skynet-local
     build: .
     restart: no
     tty: true

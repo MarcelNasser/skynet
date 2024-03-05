@@ -19,7 +19,7 @@ jobs:
   dry-run:
     runs-on: ubuntu-latest
     container:
-      image: marcelndeffo/tools:ops-scripts
+      image: marcelndeffo/tools:skynet
       env:
         VERBOSE: "TRUE"
     steps:
@@ -33,7 +33,7 @@ jobs:
   test-scrap:
     runs-on: ubuntu-latest
     container:
-      image: marcelndeffo/tools:ops-scripts
+      image: marcelndeffo/tools:skynet
       env:
         VERBOSE: "TRUE"
     steps:
@@ -47,7 +47,7 @@ jobs:
   test-compute-1:
     runs-on: ubuntu-latest
     container:
-      image: marcelndeffo/tools:ops-scripts
+      image: marcelndeffo/tools:skynet
       env:
         VERBOSE: "TRUE"
     steps:
@@ -61,7 +61,7 @@ jobs:
   test-compute-2:
     runs-on: ubuntu-latest
     container:
-      image: marcelndeffo/tools:ops-scripts
+      image: marcelndeffo/tools:skynet
       env:
         VERBOSE: "TRUE"
     steps:
@@ -75,7 +75,7 @@ jobs:
   test-av:
     runs-on: ubuntu-latest
     container:
-      image: marcelndeffo/tools:ops-scripts
+      image: marcelndeffo/tools:skynet
       env:
         VERBOSE: "TRUE"
     steps:
