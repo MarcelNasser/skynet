@@ -21,6 +21,11 @@ ENV VERBOSE 'TRUE'
 
 WORKDIR /src/
 
+# Fix font config warning
+RUN apt-get update
+
+RUN apt-get install fontconfig -y
+
 #copying python binaries
 COPY --from=pre-build /venv /venv
 ENV PATH=/venv/bin:$PATH

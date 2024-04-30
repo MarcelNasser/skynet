@@ -70,12 +70,12 @@ def _file_name(file):
     return f"{chunks[-2]}/{chunks[-1]}" if len(chunks) > 1 and str(chunks[-2]).startswith('.') else str(chunks[-1])
 
 
-def _start_plot(height: int, width: int, shape: int) -> (Figure, tuple[type(Subplot)]):
+def _start_plot(height: int, width: int, shape: int) -> (Figure, list[type(Subplot)]):
     fig, subplots = plot.subplots(shape, shape * 2, figsize=(width, height))
     return fig, subplots.flatten('F')
 
 
-def _end_plot(opt, fig: Figure, plots: tuple[Subplot], shape: int):
+def _end_plot(opt, fig: Figure, plots: list[Subplot], shape: int):
     handles = []
     for x in range(2*shape**2):
         plots[x].set_xlabel('Frequency (kHz)')
@@ -145,7 +145,7 @@ def _compute_fft(audio_data) -> numpy.ndarray:
 
 def _plot_audio(rate, audio_data,
                 label: str,
-                plots: tuple[Subplot], loc: int, shape: int,
+                plots: list[Subplot], loc: int, shape: int,
                 colors) -> (numpy.ndarray, numpy.ndarray):
     n = len(audio_data)
     fft_data = _compute_fft(audio_data)
