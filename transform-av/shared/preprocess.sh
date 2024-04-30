@@ -18,11 +18,13 @@ function preprocess(){
   CWD=$PWD
   #Converting MP3/OGG audios to wav
   debug "=> preprocess: checking MP3/OGG"
-  MP3=$(cd "$directory" && find "." -maxdepth 1 -iname '*.mp3' -o -iname '*.ogg' -o -iname '*.m4a')
+  MP3=$(cd "$directory" && find "." -maxdepth 1 -iname '*.mp3' -o -iname '*.ogg' -o -iname '*.m4a' -o -iname '*.flac')
   [ -n "$MP3" ] && {
     debug "+ converting MP3/OGG"
+    mkdir -p "$directory/.orig/"
     for file in ${MP3[*]}; do
-      {  ffmpeg -y -i "$directory/$file" "$directory/${file##*/}.wav" >/dev/null 2>/dev/null  ; }
+      {  ffmpeg -y -i "$directory/$file" "$directory/${file##*/}.wav" >/dev/null 2>/dev/null  ; \
+         mv "$directory/$file" "$directory/.orig/" ; }
     done || { cd "$CWD" && exit 2; }
   }
   debug "=> preprocess: checking audio audios"
@@ -37,9 +39,9 @@ function preprocess(){
   done <<< "$list"
   cd "$CWD" || exit 2
   #chop audio file to check fractal conservation (method==expensive)
-  [[ "$COMPUTE_METHOD" == "expensive" ]] && {
+  [[ "$COMPUTE_METHOD" == @("expensive"|"fractal") ]] && {
     debug "=> preprocess: chopping loop"
-    bash "$ROOT_DIR/../chop/run" -s "$SOURCE_DIRECTORY" -l "$FRACTAL_LEVEL" -m "no"  >/dev/null || error "chopping of expensive crashed"
+    bash "$ROOT_DIR/../chop/run" -s "$SOURCE_DIRECTORY" -l "$FRACTAL_LEVEL" -m "yes"  >/dev/null || error "chopping of fractal crashed"
   }
 }
 

@@ -109,7 +109,11 @@ function loop-compute-p() {
   while read -r filename; do
       [ -z "$filename" ] && continue
       debug "++ file #$total: $filename"
-      if [[ "$COMPUTE_METHOD" == @("expensive"|"reverse") ]]; then
+      if [[ "$COMPUTE_METHOD" == @("reverse") ]]; then
+        $PYTHON_BIN "$root_dir/../shared/scripts.py" fft \
+        -a "$audio_files/$filename" "$audio_files/.reversed/${filename,,}"  \
+        -o "$records/${filename,,}.png" && ((total++))
+      elif [[ "$COMPUTE_METHOD" == @("expensive") ]]; then
         $PYTHON_BIN "$root_dir/../shared/scripts.py" fft \
         -a "$audio_files/$filename" "$audio_files/.reversed/${filename,,}" "$audio_files/.palindromic/${filename,,}"  \
         -o "$records/${filename,,}.png" && ((total++))
