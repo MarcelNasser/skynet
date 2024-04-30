@@ -1,9 +1,13 @@
 import argparse
+import math
 import os
 import pathlib
 import sys
 from logging import getLogger, basicConfig, DEBUG, ERROR
+
+from matplotlib.pyplot import Figure
 import warnings
+
 import matplotlib
 import matplotlib.pyplot as plot
 from scipy.io import wavfile
@@ -16,17 +20,17 @@ logger = getLogger("compute-audio-space")
 basicConfig(level=ERROR, format="%(levelname)s: %(message)s")
 
 THRESHOLD = 1.E-15
+N_SHADES = 4
 
 
-class Color:
-    N_SHADES = 10
+class ColorIterator:
 
-    def __init__(self, n_shades):
-        self.n_shades = max(n_shades, self.N_SHADES)
-        self._index = -1
+    def __init__(self, n_shades, cm=matplotlib.cm.Set1):
+        self.n_shades = max(n_shades, N_SHADES)
+        self._index = 0
         c = numpy.arange(1, self.n_shades + 1)
         norm = matplotlib.colors.Normalize(vmin=c.min(), vmax=c.max())
-        self.cmap = matplotlib.cm.ScalarMappable(norm=norm, cmap=matplotlib.cm.Set1)
+        self.cmap = matplotlib.cm.ScalarMappable(norm=norm, cmap=cm)
         self.cmap.set_array([])
 
     def next(self):
@@ -43,16 +47,20 @@ def fft_audio(opt):
     """
     if opt.debug:
         logger.setLevel(DEBUG)
-    fig, subplots = _start_plot(height=opt.figureHeight, width=opt.figureWidth)
-    color = Color(len(opt.audio))
+    shape = math.ceil(math.sqrt(len(opt.audio)))
+    figs, plots = _start_plot(height=opt.figureHeight, width=opt.figureWidth, shape=shape)
+    color1 = ColorIterator(len(opt.audio), cm=matplotlib.cm.copper)
+    color2 = ColorIterator(len(opt.audio), cm=matplotlib.cm.gray)
     # Plot in reverse order, so that the first fft is on top
     for i, file in enumerate(reversed(opt.audio)):
         logger.info(f"audio file: {file}")
         duration, rate, audio_data = _read_audio(file)
-        _plot_audio(rate=rate, audio_data=audio_data,
-                    label=f"{_file_name(file)} ({duration})",
-                    subplots=subplots, color=color.next())
-    _end_plot(opt, fig, subplots)
+        _, _ = _plot_audio(rate=rate, audio_data=audio_data,
+                           label=f"{_file_name(file)} ({duration})",
+                           plots=plots,
+                           loc=i, shape=shape,
+                           colors=(color1.next(), color2.next()))
+    _end_plot(opt, figs, plots, shape=shape)
 
 
 def _file_name(file):
@@ -60,16 +68,20 @@ def _file_name(file):
     return f"{chunks[-2]}/{chunks[-1]}" if len(chunks) > 1 and str(chunks[-2]).startswith('.') else str(chunks[-1])
 
 
-def _start_plot(height: int, width: int):
-    fig, subplots = plot.subplots(2, 1, figsize=(width, height))
-    return fig, subplots
+def _start_plot(height: int, width: int, shape: int):
+    fig, subplots = plot.subplots(shape, shape * 2, figsize=(width, height))
+    return fig, subplots.flatten('F')
 
 
-def _end_plot(opt, fig, subplots):
-    fig.legend(*subplots[0].get_legend_handles_labels(), loc='upper center', ncol=min(len(opt.audio), 2),
+def _end_plot(opt, fig: Figure, plots, shape: int):
+    handles = []
+    for x in range(2*shape**2):
+        plots[x].set_xlabel('Frequency (kHz)')
+        ha, _ = plots[x].get_legend_handles_labels()
+        handles += ha
+    fig.legend(handles=handles,
+               loc='upper center', ncol=min(len(opt.audio), 2),
                bbox_transform=plot.gcf().transFigure)
-    for s in subplots:
-        s.set_xlabel('Frequency (kHz)')
     logger.debug(f"show option: {opt.show}")
     if opt.show[0] == 'yes':
         plot.show()
@@ -85,7 +97,7 @@ def _scale_re(arr: numpy.ndarray) -> numpy.ndarray:
     """
     # Scaling formulae: Re(arr) + delta
     #   A delta is added to remove null values
-    return numpy.sign(numpy.real(arr)) * numpy.log10(numpy.abs(numpy.real(arr)) + THRESHOLD)
+    return numpy.sign(numpy.real(arr)) * numpy.log10(numpy.abs(numpy.real(arr) + THRESHOLD))
 
 
 def _scale_im(arr: numpy.ndarray) -> numpy.ndarray:
@@ -94,7 +106,7 @@ def _scale_im(arr: numpy.ndarray) -> numpy.ndarray:
     """
     # Scaling formulae: Im(arr) + delta
     #   A delta is added to remove null values
-    return numpy.sign(numpy.imag(arr)) * numpy.log10(numpy.abs(numpy.imag(arr)) + THRESHOLD)
+    return numpy.sign(numpy.imag(arr)) * numpy.log10(numpy.abs(numpy.imag(arr) + THRESHOLD))
 
 
 def _to_duration(ss) -> str:
@@ -129,16 +141,23 @@ def _compute_fft(audio_data) -> numpy.ndarray:
     return fft_data
 
 
-def _plot_audio(rate, audio_data, label, subplots, color) -> None:
+def _plot_audio(rate, audio_data,
+                label: str,
+                plots, loc: int, shape: int,
+                colors) -> (numpy.ndarray, numpy.ndarray):
     n = len(audio_data)
     fft_data = _compute_fft(audio_data)
     freq = numpy.arange(0, n, 1.0) * (rate / n) / 1000
     logger.info(f"#_freq={n}, min_freq={freq[0]}(khz), max_freq={freq[-1]}(khz)")
-    subplots[0].plot(freq, _scale_re(fft_data), color=color, label=label)
-    subplots[0].set_ylabel("Re (log)")
-    subplots[1].plot(freq, _scale_im(fft_data), color=color, label=label)
-    subplots[1].set_ylabel("Im (log)")
-    return
+    re = _scale_re(fft_data)
+    im = _scale_im(fft_data)
+    plots[loc].plot(freq, re, color=colors[0], label='[Re] ' + label)
+    plots[loc].set_ylabel("Re (log)") if loc < shape else None
+    plots[loc].set_ylim(-20, 20)
+    plots[loc + shape ** 2].plot(freq, im, color=colors[1], label='[Im] ' + label)
+    plots[loc + shape ** 2].set_ylabel("Im (log)") if loc < shape else None
+    plots[loc + shape ** 2].set_ylim(-20, 20)
+    return re, im
 
 
 def int_audio(opt):

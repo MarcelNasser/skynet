@@ -23,17 +23,17 @@ The transform commands are listed below:
 ### Testing
 
 Pay attention to the testcases passing, before pushing the code to the `main` branch. The testcases are a safety to net to ensure basic statement of the transforrm command won't break. 
-Please keep in mind those testcases don't cover all scenarios. a-k-a "*it is not because the testcases passed that the overall statement is not broken.*" <br><br>
+Please keep in mind those testcases don't cover all scenarios. A-k-a "*it is not because the testcases passed that the overall statement is not broken.*" <br><br>
 The logic behind those testcases is to check degraded statement. If the degraded statement is false, then the general statement is false.
 If the degraded statement is true, we cannot say the general statement is true. 
 See example: <br>
-- general statetement: *"The brother of Paul is an hardworking person."*
+- general statement: *"The brother of Paul is an hardworking person."*
 - testcase statement: *"Paul has a brother."*
 
 Testcases must pass the [ci](../.github/workflows/ci.yml):
 
 
-| testcase              | purpose                                                                                                      | code                                                                                      |
+| testcase              | purpose                                                                                                      | code                                                                                     |
 |-----------------------|--------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
 | dry-run               | run with no entry transform scripts <br> and check if no harm done.                                          | [here](../tests/dry-run.sh)                                                              |
 | transform-reverse     | reverse two times audio sample <br> and checksum if is identical to original sample.                         | [here](../tests/av-transform-reverse.sh)                                                 |
