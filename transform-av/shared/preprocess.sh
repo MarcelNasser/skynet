@@ -39,7 +39,7 @@ function preprocess(){
   done <<< "$list"
   cd "$CWD" || exit 2
   #chop audio file to check fractal conservation (method==expensive)
-  [[ "$COMPUTE_METHOD" == @("expensive"|"fractal") ]] && {
+  [[ "$COMPUTE_METHOD" == @("fractal") ]] && {
     debug "=> preprocess: chopping loop"
     bash "$ROOT_DIR/../chop/run" -s "$SOURCE_DIRECTORY" -l "$FRACTAL_LEVEL" -m "yes"  >/dev/null || error "chopping of fractal crashed"
   }
