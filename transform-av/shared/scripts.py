@@ -4,9 +4,7 @@ import os
 import pathlib
 import sys
 from logging import getLogger, basicConfig, DEBUG, ERROR
-from typing import Iterable
 
-from matplotlib.axes import Subplot
 from matplotlib.pyplot import Figure
 import warnings
 
@@ -70,12 +68,12 @@ def _file_name(file):
     return f"{chunks[-2]}/{chunks[-1]}" if len(chunks) > 1 and str(chunks[-2]).startswith('.') else str(chunks[-1])
 
 
-def _start_plot(height: int, width: int, shape: int) -> (Figure, list[type(Subplot)]):
+def _start_plot(height: int, width: int, shape: int):
     fig, subplots = plot.subplots(shape, shape * 2, figsize=(width, height))
     return fig, subplots.flatten('F')
 
 
-def _end_plot(opt, fig: Figure, plots: list[Subplot], shape: int):
+def _end_plot(opt, fig: Figure, plots, shape: int):
     handles = []
     for x in range(2*shape**2):
         plots[x].set_xlabel('Frequency (kHz)')
@@ -145,7 +143,7 @@ def _compute_fft(audio_data) -> numpy.ndarray:
 
 def _plot_audio(rate, audio_data,
                 label: str,
-                plots: list[Subplot], loc: int, shape: int,
+                plots, loc: int, shape: int,
                 colors) -> (numpy.ndarray, numpy.ndarray):
     n = len(audio_data)
     fft_data = _compute_fft(audio_data)
