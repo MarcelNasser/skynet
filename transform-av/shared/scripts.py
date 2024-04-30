@@ -70,7 +70,7 @@ def _file_name(file):
     return f"{chunks[-2]}/{chunks[-1]}" if len(chunks) > 1 and str(chunks[-2]).startswith('.') else str(chunks[-1])
 
 
-def _start_plot(height: int, width: int, shape: int) -> (Figure, tuple[Subplot]):
+def _start_plot(height: int, width: int, shape: int) -> (Figure, tuple[type(Subplot)]):
     fig, subplots = plot.subplots(shape, shape * 2, figsize=(width, height))
     return fig, subplots.flatten('F')
 
