@@ -34,8 +34,9 @@ class ColorIterator:
         self.cmap.set_array([])
 
     def next(self):
+        cmap = self.cmap.to_rgba(self._index % self.n_shades)
         self._index += 1
-        return self.cmap.to_rgba(self._index % self.n_shades)
+        return cmap
 
 
 def fft_audio(opt):
