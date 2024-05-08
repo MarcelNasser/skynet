@@ -49,10 +49,11 @@ function chop(){
   readarray audios <<< "$@"
   file1=${audios[0]/$'\n'}
   file2=${audios[1]/$'\n'}
-  t0=$(ffprobe -i "$file1" -show_entries format=duration -v quiet -of csv="p=0")
-  t1=$(awk "BEGIN {print $t0/2.0}")
-  debug "+ chopping: $file1 ($t0->$t1)"
-  ffmpeg -nostdin -y -i "$file1" -ss 0 -to "$t1" -c copy "$file2" >/dev/null 2>/dev/null \
+  t0=$(ffprobe -i "$file1" -show_entries format=duration -v quiet -of csv="p=0" 2>/dev/null)
+  debug "+ chopping: $file1 [$t0]"
+  t1=$(awk "BEGIN {print $t0/2.0}"| sed s/,/./)
+  debug "+ chopping: $file1 [$t0->$t1]"
+  ffmpeg -nostdin -loglevel panic -y -i "$file1" -ss 0 -to "$t1" -c copy "$file2" >/dev/null  \
     || { info "x chop '$file1' failed" ; exit 2; }
 }
 

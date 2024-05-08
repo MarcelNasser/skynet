@@ -35,8 +35,8 @@ function post() {
 
 function compute() {
   file=$1
-  ffmpeg -y -i "$file" -map 0 -c:v copy -af "areverse" "./.reversed/${file,,}" >/dev/null 2>/dev/null \
-      && ffmpeg -y -i "$file" -i "./.reversed/${file,,}" -filter_complex "[0:a][1:a]concat=n=2:v=0:a=1" "./.palindromic/${file,,}" >/dev/null 2>/dev/null
+  ffmpeg -y -loglevel panic -i "$file" -map 0 -c:v copy -af "areverse" "./.reversed/${file,,}" >/dev/null \
+      && ffmpeg -y -loglevel panic -i "$file" -i "./.reversed/${file,,}" -filter_complex "[0:a][1:a]concat=n=2:v=0:a=1" "./.palindromic/${file,,}" >/dev/null
 }
 
 #Main Loop
