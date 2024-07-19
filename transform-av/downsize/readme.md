@@ -7,4 +7,6 @@ The output MP4s can be up to 30 times smaller (not really sure of the chopping a
 **Run the script**
 ```bash
 bash transform-av/downsize/run -s target_directory
+# e.g.
+bash transform-av/downsize/run -s ../../Desktop
 ```

@@ -11,7 +11,7 @@ Three computation methods:
 ```bash
 #
 #Compute FFt of audio file
-$ bash transform-av/compute/run -s /c/Users/marce/Maths/Data/Audio/Unittest -m default 
+$ bash transform-av/compute/run -s /c/Users/marce/Maths/Data/Audio/Unittest -m default
 ```
 
 - method 1: `reverse`
