@@ -1,4 +1,4 @@
-name: Build RabbitMQ Docker
+name: Build Python Dev
 
 on:
   schedule:
@@ -6,14 +6,14 @@ on:
   push:
     paths:
       - .build/rabbitmq/**
-      - .github/workflows/build-rabbitmq.yml
+      - .github/workflows/build-pythondev.yml
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         include:
-          - {os: "alpine",  tag: "alpine-rabbitmq"}
+          - {os: "ubuntu",  tag: "pythondev"}
     permissions:
       contents: write
     steps:
@@ -29,6 +29,8 @@ jobs:
       id: docker_build
       uses: docker/build-push-action@v3
       with:
-        context: "{{defaultContext}}:.build/rabbitmq/${{ matrix.os }}"
+        context: "{{defaultContext}}:.build/pythondev/${{ matrix.os }}"
         push: true
+        build-args: |
+          VERSION: 3.11
         tags: marcelndeffo/tesselite:${{ matrix.tag }}
