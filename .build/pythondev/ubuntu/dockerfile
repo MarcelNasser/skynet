@@ -47,7 +47,7 @@ RUN apt-get clean
 RUN python -m pip cache purge
 
 # As user
-CMD jupyter lab
+CMD ["jupyter", "lab"]
 
 
 
