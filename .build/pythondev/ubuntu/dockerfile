@@ -37,6 +37,9 @@ FROM base-python AS user-python
 
 ARG TESSELITE_USER=tesselite
 
+# Install network tools
+RUN apt-get -y install curl dnsutils
+
 # Install git
 RUN apt-get -y install git-all
 
