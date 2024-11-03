@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:22.04 AS base-python
 
 ARG VERSION="3.11"
 
@@ -17,15 +17,6 @@ RUN apt-get install -y software-properties-common && \
     apt-get install -y python${VERSION} python${VERSION}-dev \
     python3-pip
 
-# Install git
-RUN apt-get -y install git-all
-
-# Install terminal
-RUN apt-get -y install ttyd
-
-# Install pupyterlab
-RUN pip install jupyterlab
-
 # Upgrade packages to the latest version
 RUN apt-get -y upgrade
 
@@ -42,12 +33,34 @@ RUN ln -s /usr/bin/python${VERSION} /usr/bin/python
 RUN python3 --version
 RUN python --version
 
-# purge caches
-RUN apt-get clean
-RUN python -m pip cache purge
+FROM base-python AS user-python
 
-# As user
-CMD ["jupyter", "lab"]
+ARG TESSELITE_USER=tesselite
+
+# Install git
+RUN apt-get -y install git-all
+
+# Install terminal
+RUN apt-get -y install ttyd
+
+# User setup
+
+RUN adduser $TESSELITE_USER  --disabled-password
+
+USER $TESSELITE_USER:$TESSELITE_USER
+
+WORKDIR /home/$TESSELITE_USER
+
+# Install jupyter
+RUN python -m pip install jupyterlab
+
+# Position Env
+ENV PATH=/home/$TESSELITE_USER/.local/bin/:$PATH
+
+ENV PYTHONPATH=/home/$TESSELITE_USER
+
+# Entry command
+CMD ["python", "-m", "jupyter", "lab", "--port", "8001"]
 
 
 
