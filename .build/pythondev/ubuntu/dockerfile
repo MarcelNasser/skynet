@@ -23,6 +23,14 @@ RUN apt-get -y upgrade
 # Update PIP (Python's package manager)
 RUN python3 -m pip install --upgrade pip
 
+# Set man pages in English/utf-8
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get install -y locales apt-utils
+RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+    dpkg-reconfigure locales && \
+    update-locale LANG=en_US.UTF-8
+ENV LANG en_US.UTF-8
+
 # Set VERSION as the default Python interpreter
 RUN update-alternatives --install /usr/bin/python3 python /usr/bin/python${VERSION} 1
 RUN update-alternatives --set python /usr/bin/python${VERSION}
